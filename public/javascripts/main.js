@@ -1,6 +1,4 @@
-var data = JSON.parse(JsonData);
-ip = data.server_ip;
-
+var ip = JData.server_ip;
 var rgbUrl = "http://" + ip + ":3000/rgb_image";
 var depthUrl = "http://" + ip + ":3000/depth_image";
 

@@ -1,14 +1,15 @@
+var ip = require('ip');
 var http = require('http'),
     httpProxy = require('http-proxy');
 
 var HttpProxyRules = require('http-proxy-rules');
 
+var Source = require('./config/source.json');
+
 // Set up proxy rules instance
 var proxyRules = new HttpProxyRules({
-  rules: {
-    '.*/rgb_image': 'http://localhost:8080/stream?topic=/camera/rgb/image_raw',
-    '.*/depth_image': 'http://localhost:8080/stream?topic=/camera/depth/image_raw',
-  },
+  //rules: Source.Kinect,
+  rules: Source.KinectGazebo,
   default: 'http://localhost:8181' // default target
 });
 
@@ -30,5 +31,6 @@ http.createServer(function(req, res) {
 
   res.writeHead(500, { 'Content-Type': 'text/plain' });
   res.end('The request url and path did not match any of the listed rules!');
-}).listen(3000);
-
+}).listen(3000, function(){
+    console.log("Server listening on: http://" + ip.address() + ":3000");
+});

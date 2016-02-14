@@ -5,6 +5,11 @@ html(lang="en")
     script.
       var JsonData = !{JSON.stringify(JD)}
 
+    script(type='text/javascript').
+      var JData = JSON.parse(JsonData);
+
+    script(src='/javascripts/eventemitter2.js')
+    script(src='/javascripts/roslib.js')
     script(src='/javascripts/p5/p5.min.js')
     script(src='/javascripts/p5/addons/p5.dom.min.js')    
     script(src='/javascripts/main.js')
