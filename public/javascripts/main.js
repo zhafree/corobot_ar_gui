@@ -8,7 +8,8 @@
  */
  
 var url = 'http://192.168.24.130:8080/stream?topic=/camera/depth/image_raw&width=640&height=360';
- 
+//var url = "/images/2752844.png"
+
 var img;
  
 function loadImageErrorOverride(errEvt) {
@@ -24,12 +25,16 @@ function setup() {
   createCanvas(800, 600);
 
   img = loadImage(url);
-        //    function (pic) { print(img = pic), redraw(); },
-        //    loadImageErrorOverride);
+  /*
+  img = loadImage(url,
+                  function (pic) { print(img = pic), redraw(); },
+                  loadImageErrorOverride);
+                  */
 }
  
 function draw() {
   background(250);
+
   img.loadPixels();
   for (i=0; i<img.width; i++) {
     for (j=0; j<img.height; j++) {
@@ -37,5 +42,6 @@ function draw() {
     }
   }
   img.updatePixels();
+
   image(img, 20, 20);
 }
