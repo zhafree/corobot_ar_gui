@@ -1,3 +1,16 @@
+var ros = new ROSLIB.Ros();
+var ros_ip = JData.server_ip;
+
+ros.on('connection', function() {
+  console.log('Connection made!');
+});
+
+ros.on('close', function() {
+  console.log('Connection closed.');
+});
+
+ros.connect("ws://" + ros_ip + ":9090");
+
 // create all canvas here
 // create zebra canvas of ui framework
 var zebraCanvas;
