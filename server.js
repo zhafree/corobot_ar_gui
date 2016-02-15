@@ -5,11 +5,16 @@ var http = require('http'),
 var HttpProxyRules = require('http-proxy-rules');
 
 var Source = require('./config/source.json');
+var kinectRules;
+if (Source.Setting == 2) {
+  kinectRules = Source.Kinect;
+} else {
+  kinectRules = Source.KinectGazebo;
+}
 
 // Set up proxy rules instance
 var proxyRules = new HttpProxyRules({
-  //rules: Source.Kinect,
-  rules: Source.KinectGazebo,
+  rules: kinectRules,
   default: 'http://localhost:8181' // default target
 });
 

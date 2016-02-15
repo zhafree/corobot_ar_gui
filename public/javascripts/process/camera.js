@@ -1,10 +1,8 @@
 var createCameraCanvas = function( p ) {
-  var ip = JData.server_ip;
+  var rgbUrl = JData.rgb_url;
+  var depthUrl = JData.depth_url;
 
-  //var rgbUrl = "http://" + ip + ":3000/rgb_image";
-  //var depthUrl = "http://" + ip + ":3000/depth_image";
-  var rgbUrl = "/test/test_rgb.jpg";
-  var depthUrl = "/test/test_depth.jpg";
+  console.log(JData.rgb_url);
 
   p.setup = function() {
     rgbImage = createImg(rgbUrl)
