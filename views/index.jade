@@ -9,19 +9,25 @@ html(lang="en")
       var JData = JSON.parse(JsonData);
 
     // load libraries
-    script(src='/javascripts/eventemitter2.js')
-    script(src='/javascripts/roslib.js')
-    script(src='/javascripts/p5/p5.min.js')
-    script(src='/javascripts/p5/addons/p5.dom.min.js')
-    script(src='/javascripts/zebra/zebra.min.js')
+    script(src='/javascripts/libs/eventemitter2.js')
+    script(src='/javascripts/libs/roslib.js')
+    script(src='/javascripts/libs/p5/p5.min.js')
+    script(src='/javascripts/libs/p5/addons/p5.dom.min.js')
+    script(src='/javascripts/libs/zebra/zebra.min.js')
 
     // load p5 scripts
-    script(src='/javascripts/camera.js')
-    script(src='/javascripts/map.js')
-    script(src='/javascripts/main.js')
+    script(src='/javascripts/process/camera.js')
+    script(src='/javascripts/process/map.js')
 
-    // load zebra scripts
-    script(src='/javascripts/ui.js')
+    // load zebra scripts, the import order matters...
+    // basic.js must be the first and ui.js must be the last
+    script(src='/javascripts/ui/basic.js')
+    script(src='/javascripts/ui/camera_panel.js')
+    script(src='/javascripts/ui/view_panel.js')
+    script(src='/javascripts/ui/roslib_panel.js')
+    script(src='/javascripts/ui/ui.js')
+
+    script(src='/javascripts/main.js')
   body
     div#hideView(style='position: absolute; left: 4px; top: 4px;')
           

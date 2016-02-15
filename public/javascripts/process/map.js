@@ -16,7 +16,7 @@ var createMapCanvas = function( p ) {
   }
 
   p.setup = function() {
-    mapPos = createVector(-20, -1100);
+    mapPos = createVector(-20, -1160);
     current = createVector(0, 0);
     previous = createVector(0, 0);
 
@@ -47,6 +47,12 @@ var createMapCanvas = function( p ) {
       p.cursor(ARROW);
       p.image(mapImage, mapPos.x, mapPos.y);
     }
+
+    // Set colors
+    p.fill(204, 101, 192, 127);
+    p.stroke(127, 63, 120);
+    p.triangle(340, 262, 380, 242, 380, 282);
+
   };
 
   p.mousePressed = function() {
