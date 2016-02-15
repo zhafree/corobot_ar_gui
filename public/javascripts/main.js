@@ -1,24 +1,21 @@
-var ip = JData.server_ip;
-var rgbUrl = "http://" + ip + ":3000/rgb_image";
-var depthUrl = "http://" + ip + ":3000/depth_image";
-
-var canvas;
-var rgbImage;
-var depthImage;
-
+// create all canvas here
+// create zebra canvas of ui framework
+var zebraCanvas;
 function setup() {
-  rgbImage = createImg(rgbUrl);
-  rgbImage.position(0, 0);
-  depthImage = createImg(depthUrl);
-  depthImage.position(0, 0);
+  zebraCanvas = createCanvas(1024, 800);
+  zebraCanvas.id("GUICanvas");
+  zebraCanvas.parent("showView");
 
-  canvas = createCanvas(800, 800);
-  canvas.position(0, 0);
-}
+  // Set the bottom background for all canvas
+  background(255);
+  noLoop();
+};
 
 function draw() {
-  background(250);
-
-  image(rgbImage, 20, 20, 640, 360);
-  image(depthImage, 20, 400, 640, 360);
 }
+
+// create camera canvas for kinect views
+var cameraCanvas = new p5(createCameraCanvas, "showView");
+
+// create map canvas for map and navigation
+var mapCanvas = new p5(createMapCanvas, "showView");

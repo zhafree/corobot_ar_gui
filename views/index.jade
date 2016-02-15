@@ -8,10 +8,22 @@ html(lang="en")
     script(type='text/javascript').
       var JData = JSON.parse(JsonData);
 
+    // load libraries
     script(src='/javascripts/eventemitter2.js')
     script(src='/javascripts/roslib.js')
     script(src='/javascripts/p5/p5.min.js')
-    script(src='/javascripts/p5/addons/p5.dom.min.js')    
-    script(src='/javascripts/main.js')
-  body
+    script(src='/javascripts/p5/addons/p5.dom.min.js')
+    script(src='/javascripts/zebra/zebra.min.js')
 
+    // load p5 scripts
+    script(src='/javascripts/camera.js')
+    script(src='/javascripts/map.js')
+    script(src='/javascripts/main.js')
+
+    // load zebra scripts
+    script(src='/javascripts/ui.js')
+  body
+    div#hideView(style='position: absolute; left: 4px; top: 4px;')
+          
+    div#showView(style='position: absolute; left: 0px; top: 0px; padding: 4px;')
+      
