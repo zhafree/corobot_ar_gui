@@ -14,8 +14,20 @@ var createMapCanvas = function( p ) {
 
   var xLast = 0,
       yLast = 0,
-      xin = 0,
-      yin = 0;
+      xin = 360,
+      yin = 262,
+      ain = 0;
+
+  var odomSubscriber = new ROSLIB.Topic({
+    ros : ros,
+    name : "/odom",
+    messageType : "nav_msgs/Odometry",
+    queue_size: 1
+  }).subscribe(function(msg) {
+    xin = 360 + msg.pose.pose.position.x * 100;
+    yin = 262 - msg.pose.pose.position.y * 100;
+    ain = - 2 * atan2(msg.pose.pose.orientation.z, msg.pose.pose.orientation.w);
+  });
 
   p.preload = function() {
     mapImage = loadImage(mapUrl);
@@ -62,22 +74,23 @@ var createMapCanvas = function( p ) {
     p.fill(204, 101, 192, 127);
     p.stroke(127, 63, 120);
 
-    xin = p.mouseX;
-    yin = p.mouseY;
+    //xin = p.mouseX;
+    //yin = p.mouseY;
     var dx = xin - xLast;
     var dy = yin - yLast;
-    var angle = atan2(dy, dx);
-    xLast = xin - cos(angle) * 20;
-    yLast = yin - sin(angle) * 20;
+    //var angle = atan2(dy, dx);
+    //xLast = xin - cos(angle) * 20;
+    //yLast = yin - sin(angle) * 20;
 
     p.push();
-    p.translate(-xLast, -yLast);
+    //p.translate(-xLast, -yLast);
+    p.translate(-dx, -dy);
     p.image(mapImage, mapPos.x, mapPos.y);
     p.pop();
 
     p.push();
     p.translate(360, 262);
-    p.rotate(angle);
+    p.rotate(ain);
     p.triangle(20, 0, -10, -10, -10, 10);
     p.pop();
   };
