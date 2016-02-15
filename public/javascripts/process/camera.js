@@ -2,8 +2,6 @@ var createCameraCanvas = function( p ) {
   var rgbUrl = JData.rgb_url;
   var depthUrl = JData.depth_url;
 
-  console.log(JData.rgb_url);
-
   p.setup = function() {
     rgbImage = createImg(rgbUrl)
     rgbImage.id("kinectRGB");
