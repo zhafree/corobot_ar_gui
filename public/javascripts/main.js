@@ -36,6 +36,7 @@ function updateCanvasConfig(w, h) {
   var mh = CanvasConfig.minHeight * CanvasConfig.scale;
   CanvasConfig.width = mw > CanvasConfig.minWidth? mw : CanvasConfig.minWidth;
   CanvasConfig.height = mh > CanvasConfig.minHeight? mh : CanvasConfig.minHeight;
+  CanvasConfig.scale = CanvasConfig.height/CanvasConfig.minHeight;
   CanvasConfig.position.x = (w - CanvasConfig.width)/2;
   CanvasConfig.position.y = (h - CanvasConfig.height)/2;
 }

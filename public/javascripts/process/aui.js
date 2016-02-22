@@ -25,7 +25,7 @@ var createAUICanvas = function( p ) {
 
     var odomSubscriber = new ROSLIB.Topic({
         ros : ros,
-        name : "/odom",
+        name : "/ar/odom",
         messageType : "nav_msgs/Odometry",
         queue_size: 1
     }).subscribe(function(msg) {
@@ -62,7 +62,7 @@ var createAUICanvas = function( p ) {
         // Set colors
         p.stroke('rgba(127, 63, 120, 0)');
         p.ellipseMode(RADIUS);
-        p.fill(255);
+        p.fill('rgba(255, 255, 255, 0.8)');
         p.ellipse(width/2, height/2, width/2 - roundBoundry, height/2 - roundBoundry);
         var mapMask = p.get();
 
