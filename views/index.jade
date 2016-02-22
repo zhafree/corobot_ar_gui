@@ -3,9 +3,7 @@ html(lang="en")
   head
     title Corobot AR
     script.
-      var JsonData = !{JSON.stringify(JD)}
-
-    script(type='text/javascript').
+      var JsonData = !{JSON.stringify(JD)};
       var JData = JSON.parse(JsonData);
 
     // load libraries
@@ -16,20 +14,21 @@ html(lang="en")
     script(src='/javascripts/libs/zebra/zebra.min.js')
 
     // load p5 scripts
-    script(src='/javascripts/process/camera.js')
-    script(src='/javascripts/process/map.js')
+    script(src='/javascripts/process/rgbd.js')
+    script(src='/javascripts/process/ar.js')
+    script(src='/javascripts/process/aui.js')
 
     // load zebra scripts, the import order matters...
     // basic.js must be the first and ui.js must be the last
-    script(src='/javascripts/ui/basic.js')
-    script(src='/javascripts/ui/camera_panel.js')
-    script(src='/javascripts/ui/view_panel.js')
-    script(src='/javascripts/ui/roslib_panel.js')
-    script(src='/javascripts/ui/ui.js')
+    //script(src='/javascripts/ui/basic.js')
+    //script(src='/javascripts/ui/camera_panel.js')
+    //script(src='/javascripts/ui/view_panel.js')
+    //script(src='/javascripts/ui/roslib_panel.js')
+    //script(src='/javascripts/ui/ui.js')
 
     script(src='/javascripts/main.js')
   body
-    div#hideView(style='position: absolute; left: 4px; top: 4px;')
+    div#hideView(style='position: absolute; left: 0px; top: 0px;')
           
-    div#showView(style='position: absolute; left: 0px; top: 0px; padding: 4px;')
+    div#showView(style='position: absolute; left: 0px; top: 0px;')
       

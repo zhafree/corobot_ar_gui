@@ -1,17 +1,21 @@
 {
-  "Setting": 1,
+  "Setting": 0,
   "Ports": {
     "rosbridge_server_port": 9090,
     "web_video_server_port": 8080,
     "ar_gui_port": 8181,
     "ar_proxy_port": 3000
   },
-  "Kinect": {
-    ".*/rgb_image": "http://localhost:8080/stream?topic=/camera/rgb/image_raw",
-    ".*/depth_image": "http://localhost:8080/stream?topic=/camera/ir/image_raw"
+  "KinectStatic": {
+    "rgb_url": "./public/test/test_rgb.jpg",
+    "depth_url": "./public/test/test_depth.jpg"
+  },
+  "KinectCorobot": {
+    "rgb_url": "http://localhost:8080/stream?topic=/camera/rgb/image_raw",
+    "depth_url": "http://localhost:8080/stream?topic=/camera/ir/image_raw"
   },
   "KinectGazebo": {
-    ".*/rgb_image": "http://localhost:8080/stream?topic=/camera/rgb/image_raw",
-    ".*/depth_image": "http://localhost:8080/stream?topic=/camera/depth/image_raw"
+    "rgb_url": "http://localhost:8080/stream?topic=/camera/rgb/image_raw",
+    "depth_url": "http://localhost:8080/stream?topic=/camera/depth/image_raw"
   }
 }
