@@ -1,6 +1,7 @@
-# corobot_ar_gui
+#+TITLE: Augmented Reality Interface for the Corobot System
 
-[run apps]
+* Run
+#+begin_src shell
 roslaunch turtlebot_gazebo turtlebot_world.launch
 roslaunch turtlebot_teleop keyboard_teleop.launch
 rosrun web_video_server web_video_server
@@ -11,3 +12,4 @@ cd corobot_ar_gui
 node server.js
 
 open browser: http://192.168.24.130:3000/
+#+end_src
