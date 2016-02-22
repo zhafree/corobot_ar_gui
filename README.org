@@ -1,1 +1,13 @@
 # corobot_ar_gui
+
+[run apps]
+roslaunch turtlebot_gazebo turtlebot_world.launch
+roslaunch turtlebot_teleop keyboard_teleop.launch
+rosrun web_video_server web_video_server
+roslaunch rosbridge_server rosbridge_websocket.launch
+rosrun topic_tools drop odom 9 10 ar/odom
+cd corobot_ar_gui
+./bin/corobot-ar-gui
+node server.js
+
+open browser: http://192.168.24.130:3000/
