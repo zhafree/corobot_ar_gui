@@ -86,7 +86,7 @@ function setup() {
   bgCanvas.parent("showView");
   bgCanvas.position(0, 0);
 
-  background(255);
+  background(0);
   noLoop();
 };
 
