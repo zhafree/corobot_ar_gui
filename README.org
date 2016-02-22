@@ -1,15 +1,36 @@
 #+TITLE: Augmented Reality Interface for the Corobot System
 
+* Prerequisites
+  + http://wiki.ros.org
+  + http://wiki.ros.org/web_video_server
+  + http://wiki.ros.org/roslibjs
+  + https://github.com/creationix/nvm
+
+* Install
+#+begin_src shell
+git clone https://github.com/lukeqsun/corobot_ar_gui.git
+cd corobot_ar_gui
+npm install
+#+end_src
+
 * Run
 #+begin_src shell
+#For using Gazebo simulator only
 roslaunch turtlebot_gazebo turtlebot_world.launch
 roslaunch turtlebot_teleop keyboard_teleop.launch
+
+#For using corobot
+Change config->source.json: "Setting": 2
+
+roslaunch corobot_bringup 3dsensor.launch
+roslaunch corobot_bringup minimal.launch
+
 rosrun web_video_server web_video_server
 roslaunch rosbridge_server rosbridge_websocket.launch
 rosrun topic_tools drop odom 9 10 ar/odom
 cd corobot_ar_gui
 ./bin/corobot-ar-gui
 node server.js
-
-open browser: http://192.168.24.130:3000/
 #+end_src
+
+  + open browser: http://192.168.24.130:3000/
