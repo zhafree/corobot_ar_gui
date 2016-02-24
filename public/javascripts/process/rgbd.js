@@ -34,7 +34,7 @@ var createRGBDCanvas = function( p ) {
     y[x.length-1] = CanvasConfig.height;  // Set base y-coordinate
   };
 
-  var skip = 4;
+  var skip = 1;
   p.draw = function() {
     p.clear();
     p.push();
@@ -49,9 +49,9 @@ var createRGBDCanvas = function( p ) {
       for(var j = 0; j < img.height; j+=skip) {
         var offset = (i + j * img.width) * 4;
         var d = Kinect.depthPixels[offset];
-        img.pixels[offset] = Kinect.rgbPixels[offset];
-        img.pixels[offset + 1] = Kinect.rgbPixels[offset];
-        img.pixels[offset + 2] = Kinect.rgbPixels[offset];
+        img.pixels[offset] = Kinect.depthPixels[offset];
+        img.pixels[offset + 1] = Kinect.depthPixels[offset];
+        img.pixels[offset + 2] = Kinect.depthPixels[offset];
         img.pixels[offset + 3] = 255;
 
         if (d > minThresh && d < maxThresh && i > 100 && i < 500 && j > 200 && j < 360) {

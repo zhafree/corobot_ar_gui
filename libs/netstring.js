@@ -8,6 +8,7 @@ function BufferedNetstringStream(eid) {
   this.writable = true;
   this.length = null;
   this.buffer = null;
+  this.offset = 0;
   this.eventId = eid;
 }
 
@@ -25,12 +26,19 @@ BufferedNetstringStream.prototype.write = function(data) {
       }
     });
   } else {
-    this.buffer = new Buffer(this.length);
-    data.copy(this.buffer, 0, 0, this.length);
-    this.emit('data', this.eventId, this.buffer);
-
-    this.buffer = null;
-    this.length = null;
+    var offset = 0;
+    if (this.buffer == null) {
+      this.buffer = new Buffer(this.length);
+    }
+    var size = Math.min(data.length - offset, this.length - this.offset)
+    data.copy(this.buffer, this.offset, offset, offset + size);
+    offset += size, this.offset += size;
+    if (this.length == this.offset) {
+      this.emit('data', this.eventId, this.buffer); 
+      this.buffer = null;
+      this.length = null;
+      this.offset = 0;
+    }
   }
 }
 
