@@ -12,7 +12,7 @@
   },
   "KinectCorobot": {
     "rgb_url": "http://localhost:8080/stream?topic=/camera/rgb/image_raw",
-    "depth_url": "http://localhost:8080/stream?topic=/camera/ir/image_raw"
+    "depth_url": "http://localhost:8080/stream?topic=/camera/depth/image_float"
   },
   "KinectGazebo": {
     "rgb_url": "http://localhost:8080/stream?topic=/camera/rgb/image_raw",
