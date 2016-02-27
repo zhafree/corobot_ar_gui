@@ -1,0 +1,20 @@
+<launch>
+    <arg name="shell_executable" value="/bin/bash"/>
+
+    <node pkg="nodelet" type="nodelet" name="cari_nodelet"  args="manager"/>
+
+    <node pkg="nodelet" type="nodelet" name="cari_rectify_depth"
+            args="standalone depth_image_proc/convert_metric">
+        <remap from="image_raw" to="/camera/depth/image_raw"/>   <!-- Input -->
+        <remap from="image" to="/camera/depth/image_float"/>  <!-- Output -->
+    </node>
+
+    <node pkg="web_video_server" type="web_video_server" name="cari_web_video_server">
+        <param name="port" value="8080" />
+    </node>
+
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
+
+    <node pkg="corobot_ar_gui" type="corobot_ar_gui" name="cari_server"
+            args="$(arg shell_executable) $(find corobot_ar_gui)/bin/start-gui-server"/>
+</launch>

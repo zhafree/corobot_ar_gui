@@ -4,6 +4,9 @@ var httpProxy = require('http-proxy');
 var HttpProxyRules = require('http-proxy-rules');
 var request = require('request');
 var fs = require('fs');
+var debug = require('debug')('corobot_ar_gui:proxy_server');
+
+var server_port = process.argv[2] || 3000;
 
 var BufferedNetstringStream = require('./libs/netstring').BufferedNetstringStream;
 var Source = require('./config/source.json');
@@ -118,6 +121,6 @@ var server = http.createServer(function(req, res) {
   }
 });
 
-server.listen(3000, function(){
-  console.log("Server listening on: http://" + ip.address() + ":3000");
+server.listen(server_port, function(){
+  debug("Listening on: http://" + ip.address() + ":" + server_port);
 });

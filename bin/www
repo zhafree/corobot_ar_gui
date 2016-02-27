@@ -7,13 +7,20 @@
 var app = require('../app');
 var debug = require('debug')('corobot_ar_gui:server');
 var http = require('http');
+var path = require('path');
+var fork = require('child_process').fork;
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '8181');
 app.set('port', port);
+
+
+var ch_port = normalizePort(process.env.CHILD_PORT || '3000');
+var ch_path = path.normalize(path.join(__dirname, '..', 'server.js'))
+var child = fork(ch_path, [ch_port]);
 
 /**
  * Create HTTP server.

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+source $HOME/.nvm/nvm.sh
+
+nodeVersion=`nvm current`
+
+if [ "$nodeVersion" = 'none' ]; then
+  nvm use 5.5
+  nodeVersion=`nvm current`
+fi
+
+if [ "$nodeVersion" = 'v5.5.0' ]; then
+  pushd `dirname $0` > /dev/null
+  SCRIPTPATH=`pwd -P`  
+  popd > /dev/null
+
+  pushd "$SCRIPTPATH/.." > /dev/null
+  DEBUG=corobot_ar_gui:* PORT=8181 CHILD_PORT=3000 npm start
+  popd > /dev/null
+
+  exit 0
+fi
+
+echo "Node.js is not correctly installed!"
+echo "Please make sure nvm is installed and the Node.js version in use is 5.5. "
+exit 1

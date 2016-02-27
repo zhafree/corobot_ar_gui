@@ -1,3 +1,0 @@
-#!/bin/bash
-
-DEBUG=corobot_ar_gui:* PORT=8181 npm start
