@@ -8,29 +8,34 @@
 
 * Install
 #+begin_src shell
+cd <Your ROS workspace>/src
 git clone https://github.com/lukeqsun/corobot_ar_gui.git
 cd corobot_ar_gui
 npm install
+cd <Your ROS workspace>
+catkin_make
 #+end_src
 
 * Run
 #+begin_src shell
+#For using fake kinect data
+Change config->source.json: "Setting": 0
+
 #For using Gazebo simulator only
+Change config->source.json: "Setting": 1
 roslaunch turtlebot_gazebo turtlebot_world.launch
 roslaunch turtlebot_teleop keyboard_teleop.launch
 
 #For using corobot
 Change config->source.json: "Setting": 2
-
 roslaunch corobot_bringup 3dsensor.launch
 roslaunch corobot_bringup minimal.launch
 
-rosrun web_video_server web_video_server
-roslaunch rosbridge_server rosbridge_websocket.launch
+#Optional: to reduce odom delay
 rosrun topic_tools drop odom 9 10 ar/odom
-cd corobot_ar_gui
-./bin/corobot-ar-gui
-node server.js
+
+#Launch the main framework
+roslaunch corobot_ar_gui ar_gui.launch
 #+end_src
 
-  + open browser: http://192.168.24.130:3000/
+  + open browser: http://<Your host ip>:3000/
