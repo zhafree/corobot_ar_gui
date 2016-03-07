@@ -2,33 +2,49 @@ doctype html
 html(lang="en")
   head
     title Corobot AR
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0")
+
     script.
       var JsonData = !{JSON.stringify(JD)};
       var JData = JSON.parse(JsonData);
 
-    // load libraries
+    // load ROS js library
     script(src='/javascripts/libs/eventemitter2.js')
     script(src='/javascripts/libs/roslib.js')
-    script(src='/javascripts/libs/p5/p5.min.js')
-    script(src='/javascripts/libs/p5/addons/p5.dom.min.js')
-    script(src='/javascripts/libs/zebra/zebra.min.js')
 
     // load p5 scripts
+    script(src='/javascripts/libs/p5/p5.min.js')
+    script(src='/javascripts/libs/p5/addons/p5.dom.min.js')
     script(src='/javascripts/process/rgbd.js')
     script(src='/javascripts/process/ar.js')
     script(src='/javascripts/process/aui.js')
 
+    // load three.js scripts
+    script(src='/javascripts/libs/three/three.min.js')
+    script(src='/javascripts/libs/three/js/libs/stats.min.js')
+    script(src='/javascripts/libs/three/js/Detector.js')
+    script(src='/javascripts/libs/three/js/cameras/CombinedCamera.js')
+    script#vs(type='x-shader/x-vertex')
+      include ../public/javascripts/three/kinect_point_vs.js
+    script#fs(type='x-shader/x-fragment')
+      include ../public/javascripts/three/kinect_point_fs.js
+    script(src='/javascripts/three/kinect_point.js')
+
     // load zebra scripts, the import order matters...
     // basic.js must be the first and ui.js must be the last
+    //script(src='/javascripts/libs/zebra/zebra.min.js')
     //script(src='/javascripts/ui/basic.js')
     //script(src='/javascripts/ui/camera_panel.js')
     //script(src='/javascripts/ui/view_panel.js')
     //script(src='/javascripts/ui/roslib_panel.js')
     //script(src='/javascripts/ui/ui.js')
-
-    script(src='/javascripts/main.js')
+    
   body
     div#hideView(style='position: absolute; left: 0px; top: 0px;')
-          
     div#showView(style='position: absolute; left: 0px; top: 0px;')
+    div#threeView(style='position: absolute; left: 0px; top: 0px;')
+    div#uiView(style='position: absolute; left: 0px; top: 0px;')
+
+    script(src='/javascripts/main.js')
       

@@ -54,18 +54,30 @@ var kbContext = kBuffer.getContext('2d');
 var kbData = kbContext.createImageData(CanvasConfig.minWidth, CanvasConfig.minHeight);
 
 var rgbImage = new Image();
+var rgbTexture = new THREE.Texture( rgbImage );
+rgbTexture.minFilter = rgbTexture.magFilter = THREE.LinearFilter;
 rgbImage.onload = function() {
   kbContext.drawImage(rgbImage, 0, 0);
   Kinect.rgbPixels = kbContext.getImageData(0, 0, CanvasConfig.minWidth, CanvasConfig.minHeight).data;
+
+  rgbTexture.needsUpdate = true;
 }
 
 var depthImage = new Image();
+var depthTexture = new THREE.Texture( depthImage );
+depthTexture.minFilter = THREE.NearestFilter;
 depthImage.onload = function() {
   kbContext.drawImage(depthImage, 0, 0);
   Kinect.depthPixels = kbContext.getImageData(0, 0, CanvasConfig.minWidth, CanvasConfig.minHeight).data;
 
+  depthTexture.needsUpdate = true;
+
   if (rgbdCanvas) {
     rgbdCanvas.redraw();
+  }
+
+  if (kpointView) {
+    kpointView.render();
   }
 }
 
@@ -81,7 +93,6 @@ kinectSource.addEventListener('depthupdate', function(event) {
 // Main canvas for background
 var bgCanvas;
 function setup() {
-  updateCanvasConfig(windowWidth, windowHeight);
   bgCanvas = createCanvas(windowWidth, windowHeight);
   bgCanvas.id("bgCanvas");
   bgCanvas.parent("showView");
@@ -91,12 +102,17 @@ function setup() {
   noLoop();
 };
 
+updateCanvasConfig(window.innerWidth, window.innerHeight);
+
 // Create other canvas from bottom to top
 // RGB-D & AR mix canvas for kinect view display
 var rgbdCanvas = new p5(createRGBDCanvas, "showView");
 
 // AR Overlay for creative AR components dsiplay
-var arCanvas = new p5(createARCanvas, "showView");
+var arCanvas = new p5(createARCanvas, "uiView");
 
 // Auxiliary UI canvas for UI components display
-var auiCanvas = new p5(createAUICanvas, "showView");
+var auiCanvas = new p5(createAUICanvas, "uiView");
+
+// Three.js class for kinect point view display
+var kpointView = new KinectPoint("threeView");

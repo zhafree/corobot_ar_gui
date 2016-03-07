@@ -5,8 +5,8 @@
 
     <node pkg="nodelet" type="nodelet" name="cari_rectify_depth"
             args="standalone depth_image_proc/convert_metric">
-        <remap from="image_raw" to="/camera/depth/image_raw"/>   <!-- Input -->
-        <remap from="image" to="/camera/depth/image_float"/>  <!-- Output -->
+        <remap from="image_raw" to="/camera/depth/image_raw"/>
+        <remap from="image" to="/camera/depth/image_float"/>
     </node>
 
     <node pkg="web_video_server" type="web_video_server" name="cari_web_video_server">
