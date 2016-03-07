@@ -1,12 +1,39 @@
 <launch>
+    <arg name="respawn" default="true" />
+
     <arg name="shell_executable" value="/bin/bash"/>
 
     <node pkg="nodelet" type="nodelet" name="cari_nodelet"  args="manager"/>
 
-    <node pkg="nodelet" type="nodelet" name="cari_rectify_depth"
-            args="standalone depth_image_proc/convert_metric">
+    <!-- node pkg="nodelet" type="nodelet" name="cari_float_depth"
+            args="standalone depth_image_proc/convert_metric"
+            respawn="$(arg respawn)">
         <remap from="image_raw" to="/camera/depth/image_raw"/>
-        <remap from="image" to="/camera/depth/image_float"/>
+        <remap from="image" to="/cari/depth/image_float"/>
+    </node -->
+
+    <node pkg="nodelet" type="nodelet" name="cari_rectify_rgb"
+        args="standalone image_proc/rectify" 
+        respawn="$(arg respawn)">
+        <remap from="image_mono" to="/camera/rgb/image_raw" />
+        <remap from="image_rect" to="/cari/rgb/image_rect" />
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="cari_rectify_depth"
+        args="standalone image_proc/rectify" 
+        respawn="$(arg respawn)">
+        <remap from="image_mono" to="/camera/depth/image_raw" />
+        <remap from="image_rect" to="/cari/depth/image_rect" />
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="cari_float_depth"
+          args="standalone depth_image_proc/register"
+          respawn="$(arg respawn)">
+        <remap from="rgb/camera_info" to="/camera/rgb/camera_info"/>
+        <remap from="depth/camera_info" to="/camera/depth/camera_info"/>
+        <remap from="depth/image_rect" to="/cari/depth/image_rect"/>
+        <remap from="depth_registered/camera_info" to="/cari/depth_registered/camera_info"/>
+        <remap from="depth_registered/image_rect" to="/cari/depth_registered/image_rect"/>
     </node>
 
     <node pkg="web_video_server" type="web_video_server" name="cari_web_video_server">

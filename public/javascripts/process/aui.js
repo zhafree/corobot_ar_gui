@@ -25,7 +25,7 @@ var createAUICanvas = function( p ) {
 
     var odomSubscriber = new ROSLIB.Topic({
         ros : ros,
-        name : "/ar/odom",
+        name : "/cari/odom",
         messageType : "nav_msgs/Odometry",
         queue_size: 1
     }).subscribe(function(msg) {

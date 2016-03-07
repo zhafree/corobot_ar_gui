@@ -41,10 +41,10 @@ html(lang="en")
     //script(src='/javascripts/ui/ui.js')
     
   body
-    div#hideView(style='position: absolute; left: 0px; top: 0px;')
-    div#showView(style='position: absolute; left: 0px; top: 0px;')
-    div#threeView(style='position: absolute; left: 0px; top: 0px;')
-    div#uiView(style='position: absolute; left: 0px; top: 0px;')
+    div#hideView(style='position: absolute; left: 0px; top: 0px; z-index: -1')
+    div#showView(style='position: absolute; left: 0px; top: 0px; z-index: 1')
+    div#threeView(style='position: absolute; left: 0px; top: 0px; z-index: 0')
+    div#uiView(style='position: absolute; left: 0px; top: 0px; z-index: 2')
 
     script(src='/javascripts/main.js')
       

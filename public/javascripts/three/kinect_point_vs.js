@@ -10,8 +10,8 @@ uniform float zOffset;
 
 varying vec2 vUv;
 
-const float XtoZ = 1.11146; // tan( 1.0144686 / 2.0 ) * 2.0;
-const float YtoZ = 0.83359; // tan( 0.7898090 / 2.0 ) * 2.0;
+const float XtoZ = 1.11146; // tan( 58 / 2.0 ) * 2.0;
+const float YtoZ = 0.83359; // tan( 45 / 2.0 ) * 2.0;
 
 //varying float depth;
 
@@ -27,7 +27,7 @@ void main() {
     vec4 pos = vec4(
         ( position.x / width - 0.5 ) * z * XtoZ,
         ( position.y / height - 0.5 ) * z * YtoZ,
-            -z + zOffset,
+        -z + zOffset,
         1.0);
 
     gl_PointSize = pointSize;

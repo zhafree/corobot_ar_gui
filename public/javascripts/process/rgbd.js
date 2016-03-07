@@ -38,7 +38,8 @@ var createRGBDCanvas = function( p ) {
   p.draw = function() {
     p.clear();
     p.push();
-    p.scale(CanvasConfig.scale);
+    //p.scale(CanvasConfig.scale);
+    p.scale(0.5);
 
     var record = 0;
     var rx = 0;
@@ -49,7 +50,7 @@ var createRGBDCanvas = function( p ) {
       for(var j = 0; j < img.height; j+=skip) {
         var offset = (i + j * img.width) * 4;
         var d = Kinect.depthPixels[offset];
-        img.pixels[offset] = Kinect.rgbPixels[offset] + Kinect.depthPixels[offset];
+        img.pixels[offset] = Kinect.rgbPixels[offset];
         img.pixels[offset + 1] = Kinect.rgbPixels[offset + 1];
         img.pixels[offset + 2] = Kinect.rgbPixels[offset + 2];
         img.pixels[offset + 3] = 255;

@@ -1,3 +1,4 @@
+
 {
   "Setting": 1,
   "Ports": {
@@ -11,11 +12,11 @@
     "depth_url": "./public/test/test_depth.jpg"
   },
   "KinectCorobot": {
-    "rgb_url": "http://localhost:8080/stream?topic=/camera/rgb/image_raw",
-    "depth_url": "http://localhost:8080/stream?topic=/camera/depth/image_float"
+    "rgb_url": "http://localhost:8080/stream?topic=/cari/rgb/image_rect",
+    "depth_url": "http://localhost:8080/stream?topic=/cari/depth_registered/image_rect"
   },
   "KinectGazebo": {
-    "rgb_url": "http://localhost:8080/stream?topic=/camera/rgb/image_raw",
-    "depth_url": "http://localhost:8080/stream?topic=/camera/depth/image_raw"
+    "rgb_url": "http://localhost:8080/stream?topic=/cari/rgb/image_rect",
+    "depth_url": "http://localhost:8080/stream?topic=/cari/depth_registered/image_rect"
   }
 }

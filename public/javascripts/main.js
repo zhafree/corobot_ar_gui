@@ -72,11 +72,11 @@ depthImage.onload = function() {
 
   depthTexture.needsUpdate = true;
 
-  if (rgbdCanvas) {
+  if (typeof(rgbdCanvas) != "undefined") {
     rgbdCanvas.redraw();
   }
 
-  if (kpointView) {
+  if (typeof(kpointView) != "undefined") {
     kpointView.render();
   }
 }
@@ -95,7 +95,7 @@ var bgCanvas;
 function setup() {
   bgCanvas = createCanvas(windowWidth, windowHeight);
   bgCanvas.id("bgCanvas");
-  bgCanvas.parent("showView");
+  bgCanvas.parent("hideView");
   bgCanvas.position(0, 0);
 
   background(0);

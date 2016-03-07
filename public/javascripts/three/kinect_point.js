@@ -7,7 +7,8 @@ var KinectPoint = function(div_id) {
     var __this = this;
 
     var width = 640, height = 480;
-    var nearClipping = 3000, farClipping = 4000;
+    // Kinect common range: 800mm to 4000mm
+    var nearClipping = 850, farClipping = 4000;
 
     this.container = document.getElementById(div_id);
 
@@ -16,7 +17,7 @@ var KinectPoint = function(div_id) {
     this.stats.domElement.style.top = '0px';
     //this.container.appendChild( this.stats.domElement );
 
-    this.camera = new THREE.CombinedCamera( CanvasConfig.width / 2, CanvasConfig.height / 2, 70, 1, 5000, -1000, 5000 );
+    this.camera = new THREE.CombinedCamera( CanvasConfig.width / 2, CanvasConfig.height / 2, 58, 1, 5000, -1000, 5000 );
     this.lookAtScene = true;
     this.cameraRadius = (nearClipping + farClipping)/2;
     this.camera.position.set( 0, 0, -this.cameraRadius );
@@ -53,16 +54,14 @@ var KinectPoint = function(div_id) {
 
     var pointMaterial = new THREE.ShaderMaterial( {
         uniforms: {
-
             "depthMap": { type: "t", value: depthTexture },
             "rgbMap": { type: "t", value: rgbTexture },
             "width": { type: "f", value: width },
             "height": { type: "f", value: height },
             "nearClipping": { type: "f", value: nearClipping },
             "farClipping": { type: "f", value: farClipping },
-
             "pointSize": { type: "f", value: 3 },
-            "zOffset": { type: "f", value: 2425 }
+            "zOffset": { type: "f", value: this.cameraRadius }
         },
         vertexShader: document.getElementById( 'vs' ).textContent,
         fragmentShader: document.getElementById( 'fs' ).textContent,
