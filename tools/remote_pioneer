@@ -1,6 +1,6 @@
 #!/bin/bash
 
-corobot_ip=129.21.105.107
+corobot_ip=129.21.74.226
 
 export ROS_MASTER_URI=http://$corobot_ip:11311
 export ROS_IP=0.0.0.0

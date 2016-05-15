@@ -19,19 +19,33 @@ var createAUICanvas = function( p ) {
 
     var xLast = 0,
         yLast = 0,
+        mapFactor = 30.5,
         xin = 0,
         yin = 0,
         ain = 0;
 
-    var odomSubscriber = new ROSLIB.Topic({
+    // Test data
+    xin = 86.6976625179 * mapFactor;
+    yin = 1440 - 35.3127561632 * mapFactor;
+    ain = -8.59161182583;
+    //xin = 94.008 * mapFactor;
+    //yin = 1440 - 34.031 * mapFactor;
+    //xin = 86.308 * mapFactor;
+    //yin = 1440 - 36.531 * mapFactor;
+    //ain = -7.0543465492;
+    //xin = 86.908 * mapFactor;
+    //yin = 1440 - 33.031 * mapFactor;
+    //ain = -8.131;
+
+    var poseSubscriber = new ROSLIB.Topic({
         ros : ros,
-        name : "/cari/odom",
-        messageType : "nav_msgs/Odometry",
+        name : "/cari/pose",
+        messageType : "corobot_common/Pose",
         queue_size: 1
     }).subscribe(function(msg) {
-        xin = msg.pose.pose.position.x * 100;
-        yin = msg.pose.pose.position.y * 100;
-        ain = 2 * atan2(msg.pose.pose.orientation.z, msg.pose.pose.orientation.w);
+        //xin = msg.x * mapFactor;
+        //yin = 1440 - msg.y * mapFactor;
+        //ain = -msg.theta;
     });
 
     p.preload = function() {
@@ -40,11 +54,11 @@ var createAUICanvas = function( p ) {
 
     p.setup = function() {
         width = height = CanvasConfig.height/2;
-        canvasPos = createVector(windowWidth - width, (windowHeight - height)/2);
+        canvasPos = createVector(windowWidth - width, windowHeight - height);
         current = createVector(0, 0);
         previous = createVector(0, 0);
         mapTrans = createVector(0, 0);
-        mapPos = createVector(-2450, -170);
+        mapPos = createVector(120 * CanvasConfig.scale, 120 * CanvasConfig.scale);
 
         var c = p.createCanvas(width, height);
         c.id("auiCanvas");

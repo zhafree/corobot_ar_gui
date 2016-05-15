@@ -1,12 +1,15 @@
 uniform sampler2D depthMap;
-uniform float depthScale;
-
 uniform float width;
 uniform float height;
 uniform float nearClipping, farClipping;
 
+uniform float depthScale;
+uniform float depthClipping;
+
+uniform float modelScale;
+uniform float modelTransZ;
+
 uniform float pointSize;
-uniform float zOffset;
 
 varying vec2 vUv;
 
@@ -20,14 +23,20 @@ void main() {
 
     vec4 color = texture2D( depthMap, vUv );
 
-    float depth = ( color.r + color.g + color.b ) / 3.0;
+    float depth = 1.0 - ( color.r + color.g + color.b ) / 3.0;
+    //depth = 1.0;
+    depth = depth * depthScale;
+    // Cut the near noise
+    // -0.01 for less noise
+    if (depth >= depthClipping - 0.01)
+        depth = 1000.0;
 
-    float z = ( 1.0 - depth ) * (farClipping - nearClipping) + nearClipping;
+    float z = depth * (farClipping - nearClipping) + nearClipping;
 
     vec4 pos = vec4(
-        ( position.x / width - 0.5 ) * z * XtoZ,
-        ( position.y / height - 0.5 ) * z * YtoZ,
-        -z + zOffset,
+        ( position.x / width - 0.5 ) * z * XtoZ * modelScale,
+        ( position.y / height - 0.5 ) * z * YtoZ * modelScale,
+        -z + modelTransZ,
         1.0);
 
     gl_PointSize = pointSize;

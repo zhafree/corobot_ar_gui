@@ -4,7 +4,7 @@ var createRGBDCanvas = function( p ) {
   var minThresh = 25;
   var maxThresh = 200;
 
-  var numSegments = 10,
+  var numSegments = 3,
       x = [],
       y = [],
       angle = [],
@@ -17,12 +17,52 @@ var createRGBDCanvas = function( p ) {
     angle[i] = 0;
   }
 
+  var goalSubscriber = new ROSLIB.Topic({
+    ros : ros,
+    name : "/cari/goal",
+    messageType : "geometry_msgs/Point",
+    queue_size: 1
+  }).subscribe(function(msg) {
+    console.log("goalSubscriber: " + JSON.stringify(msg));
+    x[1] = 0;
+    y[1] = 0;
+    angle[1] = 0;
+    x[2] = msg.x * 100 + x[numSegments - 1];
+    y[2] = msg.y * 100 + y[numSegments - 1];
+    angle[2] = msg.z;
+  });
+
+  var waypointSubscriber = new ROSLIB.Topic({
+    ros : ros,
+    name : "/cari/waypoints",
+    messageType : "geometry_msgs/Point",
+    queue_size: 1
+  }).subscribe(function(msg) {
+    //console.log("waypointSubscriber: " + msg);
+    x[1] = msg.x * 100 + x[numSegments - 1];
+    y[1] = msg.y * 100 + y[numSegments - 1];
+    angle[1] = msg.z;
+  });
+
+  var waypointReachedSubscriber = new ROSLIB.Topic({
+    ros : ros,
+    name : "/cari/waypoints_reached",
+    messageType : "geometry_msgs/Point",
+    queue_size: 1
+
+  }).subscribe(function(msg) {
+    //console.log("waypointReachedSubscriber: " + msg);
+    x[1] = 0;
+    y[1] = 0;
+    angle[1] = 0;
+  });
+
   p.setup = function() {
     p.pixelDensity(1);
 
     var c = p.createCanvas(CanvasConfig.width, CanvasConfig.height);
     c.id("rgbdCanvas");
-    c.position(CanvasConfig.position.x, CanvasConfig.position.y);
+    c.position(CanvasConfig.position.x/2, CanvasConfig.position.y/2);
     //p.background('rgba(255, 0, 0, 0.2)');
     p.noLoop();
     //p.frameRate(30);
@@ -30,7 +70,7 @@ var createRGBDCanvas = function( p ) {
     defaultScale = CanvasConfig.width/CanvasConfig.minWidth;
     img = p.createImage(CanvasConfig.minWidth, CanvasConfig.minHeight);
 
-    x[x.length-1] = CanvasConfig.width/2; // Set base x-coordinate
+    x[x.length-1] = CanvasConfig.width/2 + CanvasConfig.position.x/2; // Set base x-coordinate
     y[x.length-1] = CanvasConfig.height;  // Set base y-coordinate
   };
 
@@ -68,9 +108,12 @@ var createRGBDCanvas = function( p ) {
     p.image(img, 0, 0);
     p.pop();
 
+    return;
+
     p.strokeWeight(20);
     p.stroke(0, 255, 0, 100);
-    reachSegment(0, rx * CanvasConfig.scale, ry * CanvasConfig.scale);
+    //reachSegment(0, rx * CanvasConfig.scale, ry * CanvasConfig.scale);
+    reachSegment(0, x[2], y[2]);
     for(var i=1; i<numSegments; i++) {
       reachSegment(i, targetX, targetY);
     }

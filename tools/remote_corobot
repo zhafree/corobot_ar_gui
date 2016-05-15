@@ -1,0 +1,7 @@
+#!/bin/bash
+
+corobot_ip=129.21.113.167
+
+export ROS_MASTER_URI=http://$corobot_ip:11311
+export ROS_IP=129.21.66.115
+export ROS_HOSTNAME=`hostname -I | awk '{ print $NF }'`
