@@ -8,11 +8,15 @@ zebra.ready(function() {
   // create canvas
   var desktop = new zCanvas("GUICanvas");
   var root = desktop.root;
-  root.setLayout(new BorderLayout(4, 4));
-  root.setBorder(new Border());
+  root.setLayout(new FlowLayout(
+      zebra.layout.CENTER,
+      zebra.layout.TOP,
+      zebra.layout.VERTICAL, 4));
+  root.setBorder(new Border("rgba(50,50,50,0.5)", 2));
   root.setPadding(4);
+  root.setBackground("rgba(200,200,200,0.5)");
 
   // Add root layer UI components
-  root.add(LEFT, new RoslibPage());
   root.add(RIGHT, new ViewPage());
+  root.add(BOTTOM, new RoslibPage());
 });

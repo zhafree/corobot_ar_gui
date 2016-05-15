@@ -44,7 +44,10 @@ function updateCanvasConfig(w, h) {
 // 2. Kinect image streams
 var Kinect = {
   "rgbPixels": [],
-  "depthPixels": []
+  "depthPixels": [],
+  "ColorMode": {
+    "r":0.0, "g":1.0, "b":0.0, "a": 0.0
+  }
 };
 
 var kBuffer = document.createElement('canvas');
@@ -104,15 +107,17 @@ function setup() {
 
 updateCanvasConfig(window.innerWidth, window.innerHeight);
 
-// Create other canvas from bottom to top
-// RGB-D & AR mix canvas for kinect view display
-var rgbdCanvas = new p5(createRGBDCanvas, "showView");
+// Auxiliary UI canvas for UI components display with Zebra
+var zebraCanvas = new p5(createZebraCanvas, "uiView");
 
-// AR Overlay for creative AR components dsiplay
-var arCanvas = new p5(createARCanvas, "uiView");
+// Auxiliary UI canvas for kinect RGB thumbnail view with P5.js
+var rgbdCanvas = new p5(createRGBDCanvas, "uiView");
 
-// Auxiliary UI canvas for UI components display
+// Auxiliary UI canvas for navigation map with P5.js
 var auiCanvas = new p5(createAUICanvas, "uiView");
 
-// Three.js class for kinect point view display
+// AR Overlay for creative AR components dsiplay
+var arCanvas = new p5(createARCanvas, "showView");
+
+// RGB-D & AR mix canvas for kinect view display with Three.js
 var kpointView = new KinectPoint("threeView");

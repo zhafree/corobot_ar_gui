@@ -16,8 +16,9 @@ html(lang="en")
     // load p5 scripts
     script(src='/javascripts/libs/p5/p5.min.js')
     script(src='/javascripts/libs/p5/addons/p5.dom.min.js')
-    script(src='/javascripts/process/rgbd.js')
     script(src='/javascripts/process/ar.js')
+    script(src='/javascripts/process/zebra.js')
+    script(src='/javascripts/process/rgbd.js')
     script(src='/javascripts/process/aui.js')
 
     // load three.js scripts
@@ -33,17 +34,16 @@ html(lang="en")
 
     // load zebra scripts, the import order matters...
     // basic.js must be the first and ui.js must be the last
-    //script(src='/javascripts/libs/zebra/zebra.min.js')
-    //script(src='/javascripts/ui/basic.js')
-    //script(src='/javascripts/ui/camera_panel.js')
-    //script(src='/javascripts/ui/view_panel.js')
-    //script(src='/javascripts/ui/roslib_panel.js')
-    //script(src='/javascripts/ui/ui.js')
+    script(src='/javascripts/libs/zebra/zebra.min.js')
+    script(src='/javascripts/ui/basic.js')
+    script(src='/javascripts/ui/view_panel.js')
+    script(src='/javascripts/ui/roslib_panel.js')
+    script(src='/javascripts/ui/ui.js')
     
   body
     div#hideView(style='position: absolute; left: 0px; top: 0px; z-index: -1')
-    div#showView(style='position: absolute; left: 0px; top: 0px; z-index: 1')
     div#threeView(style='position: absolute; left: 0px; top: 0px; z-index: 0')
+    div#showView(style='position: absolute; left: 0px; top: 0px; z-index: 1')
     div#uiView(style='position: absolute; left: 0px; top: 0px; z-index: 2')
 
     script(src='/javascripts/main.js')

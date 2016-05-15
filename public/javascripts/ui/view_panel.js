@@ -5,37 +5,18 @@ zebra.package("ui.ros", function(pkg, Class) {
     pkg.ViewPage = new Class(Panel, [
         function() {
             this.$super();
-            this.setLayout(new BorderLayout(4, 4));
+            this.setLayout(new BorderLayout(1, 1));
             this.setPadding(4);
-            this.add(TOP, pkg.createBorderPan("Map View", this.mapPage()));
-            this.add(BOTTOM, this.cameraPage());
+            this.add(TOP, pkg.createBorderPan("Kinect RGB Thumbnail", this.thumbnailPage()));
+            this.setPreferredSize(340, 272);
         },
 
-        function mapPage() {
-            var mapPanel = new Panel(new FlowLayout(CENTER, CENTER, HORIZONTAL, 4));
-            mapPanel.setId("map_view");
-            mapPanel.setPreferredSize(728, 532);
+        function thumbnailPage() {
+            var thumbnailPanel = new Panel(new FlowLayout(CENTER, CENTER, HORIZONTAL, 4));
+            thumbnailPanel.setId("thumbnail_view");
+            thumbnailPanel.setPreferredSize(324, 244);
 
-            return mapPanel;
-        },
-
-        // depth and rgb views
-        function cameraPage() {
-            var cp = new Panel(new BorderLayout(4, 4));
-            cp.setPadding(4);
-
-            var depthPanel = new Panel(new FlowLayout(CENTER, CENTER, HORIZONTAL, 4));
-            depthPanel.setId("depth_view");
-            depthPanel.setPreferredSize(360, 200);
-
-            var rgbPanel = new Panel(new FlowLayout(CENTER, CENTER, HORIZONTAL, 4));
-            rgbPanel.setId("rgb_view");
-            rgbPanel.setPreferredSize(360, 200);
-
-            cp.add(LEFT, pkg.createBorderPan("Kinect Depth", depthPanel));
-            cp.add(RIGHT, pkg.createBorderPan("Kinect RGB", rgbPanel));
-
-            return cp;
+            return thumbnailPanel;
         }
     ]);
 });

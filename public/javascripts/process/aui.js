@@ -25,17 +25,12 @@ var createAUICanvas = function( p ) {
         ain = 0;
 
     // Test data
-    xin = 86.6976625179 * mapFactor;
-    yin = 1440 - 35.3127561632 * mapFactor;
-    ain = -8.59161182583;
-    //xin = 94.008 * mapFactor;
-    //yin = 1440 - 34.031 * mapFactor;
-    //xin = 86.308 * mapFactor;
-    //yin = 1440 - 36.531 * mapFactor;
-    //ain = -7.0543465492;
-    //xin = 86.908 * mapFactor;
-    //yin = 1440 - 33.031 * mapFactor;
-    //ain = -8.131;
+    xin = 73.6 * mapFactor;
+    yin = 1440 - 37.4 * mapFactor;
+    ain = -3.92;
+    // Waypoint Test
+    //xin = 70.2 * mapFactor;
+    //yin = 1440 - 37.3 * mapFactor;
 
     var poseSubscriber = new ROSLIB.Topic({
         ros : ros,

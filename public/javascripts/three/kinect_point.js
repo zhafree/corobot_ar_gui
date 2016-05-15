@@ -6,9 +6,14 @@ var KinectPoint = function(div_id) {
 
     var __this = this;
 
+    // 0.0 for user mode
+    // 0.2 for debuggging mode
+    this.workMode = new THREE.Vector4(Kinect.ColorMode.r, Kinect.ColorMode.g,
+                                      Kinect.ColorMode.b, Kinect.ColorMode.a);
+
     var width = 640, height = 480;
-    // Kinect common range: 800mm to 4000mm
-    var nearClipping = 850, farClipping = 4000;
+    // Kinect common range: 200mm to 1000mm
+    var nearClipping = 200, farClipping = 1000;
 
     var kinectXFactor = 0.1,
         kinectZFactor = 0.1,
@@ -17,20 +22,14 @@ var KinectPoint = function(div_id) {
         yin = 0,
         ain = 0;
 
-    var flagSize = 200,
+    var flagSize = 100,
         wp_xin = 0,
         wp_yin = 0;
 
     // Test data
-    xin = (86.6976625179 + 3.0) * mapFactor;
-    yin = (35.3127561632 - 3.0) * mapFactor;
-    ain = 8.59161182583;
-    //xin = 87.308 * mapFactor;
-    //yin = 31.031 * mapFactor;
-    //ain = 7.0543465492;
-    //xin = 86.908 * mapFactor;
-    //yin = 33.031 * mapFactor;
-    //ain = 8.131;
+    xin = 73.6 * mapFactor;
+    yin = 37.4 * mapFactor;
+    ain = 3.92;
 
     // Math for map texture mapping
     var d_mapScale = 1.0;
@@ -54,12 +53,12 @@ var KinectPoint = function(div_id) {
     var gNum = 10.0 * d_mapScale;
     var gSize = (nearClipping + farClipping)/2,
         iStep = gSize/gNum;
-    var gBottom = - 0.14 * (farClipping - nearClipping) * 0.83359,
+    var gBottom = - 0.19 * (farClipping - nearClipping) * 0.83359,
         jStep = -gBottom/gNum/2.0;
 
     //Math for Waypoint
-    wp_xin = 88.008 * mapFactor,
-    wp_yin = 34.031 * mapFactor;
+    wp_xin = 70.2 * mapFactor,
+    wp_yin = 37.3 * mapFactor;
     var d_wpFar = Math.sqrt((xin - wp_xin) * (xin - wp_xin) + (yin - wp_yin) * (yin - wp_yin));
     var wp_xend = -d_wpFar * Math.cos(ain + Math.atan((xin - wp_xin)/(yin - wp_yin))) * 16;
     var wp_yend = -gSize/2 + d_wpFar * Math.sin(ain + Math.atan((xin - wp_xin)/(yin - wp_yin))) * 9.0;
@@ -74,7 +73,7 @@ var KinectPoint = function(div_id) {
     this.camera = new THREE.CombinedCamera( CanvasConfig.width / 2, CanvasConfig.height / 2, 58, 1, 5000, -1000, 5000 );
     this.lookAtScene = true;
     this.cameraRadius = gSize;
-    this.camera.position.set(0, 1000, -this.cameraRadius + 1000);
+    this.camera.position.set(0, 200, -this.cameraRadius);
 
     this.scene = new THREE.Scene();
     //this.scene.fog = new THREE.Fog( 0x000000, (nearClipping + farClipping)/2, nearClipping + farClipping );
@@ -83,7 +82,9 @@ var KinectPoint = function(div_id) {
     var mapUrl = "/images/pointDataMapBlue.png";
     var mapTexture = new THREE.TextureLoader().load(mapUrl);
     mapTexture.minFilter = mapTexture.magFilter = THREE.LinearFilter;
-    var mapMaterial = new THREE.MeshBasicMaterial({ map : mapTexture, transparent: true, opacity: 0.5 });
+    var mapMaterial = new THREE.MeshBasicMaterial({ map : mapTexture,
+                                                    transparent: true,
+                                                    opacity: 0.5});
     var mapGeometry = new THREE.PlaneGeometry(gSize * 2, gSize * 2);
     mapGeometry.faceVertexUvs[0] = [];
     mapGeometry.faceVertexUvs[0].push([ bricks[0], bricks[1], bricks[3] ]);
@@ -126,11 +127,12 @@ var KinectPoint = function(div_id) {
             "height": { type: "f", value: height },
             "nearClipping": { type: "f", value: nearClipping },
             "farClipping": { type: "f", value: farClipping },
-            "depthScale": { type: "f", value: 0.45},
-            "depthClipping": { type: "f", value: 0.4 },
-            "modelScale" : { type: "f", value: 0.7 },
+            "depthScale": { type: "f", value: 1.0},
+            "depthClipping": { type: "f", value: 0.8 },
+            "modelScale" : { type: "f", value: 1.0 },
             "modelTransZ": { type: "f", value: this.cameraRadius },
-            "pointSize": { type: "f", value: 5 }
+            "pointSize": { type: "f", value: 5 },
+            "colorMode": { type: "4fv", value: this.workMode}
         },
         vertexShader: document.getElementById( 'vs' ).textContent,
         fragmentShader: document.getElementById( 'fs' ).textContent,
@@ -147,8 +149,8 @@ var KinectPoint = function(div_id) {
     var flagMaterial = new THREE.MeshBasicMaterial({ map : flagTexture, transparent: true });
     var flagPlane = new THREE.Mesh(new THREE.PlaneGeometry(flagSize, flagSize), flagMaterial);
     flagPlane.material.side = THREE.DoubleSide;
-    flagPlane.position.x = wp_xend;
-    flagPlane.position.z = wp_yend;
+    flagPlane.position.x = -330; //wp_xend;
+    flagPlane.position.z = -10; //wp_yend;
     flagPlane.position.y = gBottom + flagSize/2;
     flagPlane.material.opacity = 1.0;
     this.scene.add( flagPlane );
@@ -171,6 +173,10 @@ var KinectPoint = function(div_id) {
 
     this.render = function() {
         var timer = Date.now() * 0.0001;
+
+        __this.workMode = new THREE.Vector4(Kinect.ColorMode.r, Kinect.ColorMode.g,
+                                            Kinect.ColorMode.b, Kinect.ColorMode.a);
+        pointMesh.material.uniforms.colorMode.value = __this.workMode;
 
         //__this.camera.position.x = Math.cos( -Math.PI/2 - timer) * __this.cameraRadius;
         //__this.camera.position.z = Math.sin( -Math.PI/2 - timer) * __this.cameraRadius;
