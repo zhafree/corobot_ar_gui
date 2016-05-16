@@ -258,9 +258,11 @@ var KinectPoint = function(div_id) {
         messageType : "geometry_msgs/Point",
         queue_size: 1
     }).subscribe(function(msg) {
+        // TODO
         //console.log("waypointsSubscriber: " + JSON.stringify(msg));
     });
 
+    // Unused
     var waypointReached = new ROSLIB.Topic({
         ros : ros,
         name : "/cari/waypoints_reached",
@@ -269,16 +271,12 @@ var KinectPoint = function(div_id) {
     }).subscribe(function(msg) {
     });
 
+    //Unused
     var waypointFailed = new ROSLIB.Topic({
         ros : ros,
         name : "/cari/waypoints_failed",
         messageType : "geometry_msgs/Point",
         queue_size: 1
     }).subscribe(function(msg) {
-        wp_xin = 0,
-        wp_yin = -gSize/2;
-        flagPlane.position.x = wp_xin;
-        flagPlane.position.z = wp_yin;
-        flagPlane.material.opacity = 0.0;
     });
 };

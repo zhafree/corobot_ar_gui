@@ -19,7 +19,7 @@ var createARCanvas = function( p ) {
     queue_size: 1
   }).subscribe(function(msg) {
     // TODO
-    //reachSegment(0, 5   * CanvasConfig.scale, 5 * CanvasConfig.scale);
+    //reachSegment(0, msg.x * CanvasConfig.scale, msg.y * CanvasConfig.scale);
   });
 
   p.setup = function() {
