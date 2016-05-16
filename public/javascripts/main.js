@@ -116,7 +116,7 @@ var rgbdCanvas = new p5(createRGBDCanvas, "uiView");
 // Auxiliary UI canvas for navigation map with P5.js
 var auiCanvas = new p5(createAUICanvas, "uiView");
 
-// AR Overlay for creative AR components dsiplay
+// AR Overlay for creative AR components dsiplay with p5.js
 var arCanvas = new p5(createARCanvas, "showView");
 
 // RGB-D & AR mix canvas for kinect view display with Three.js

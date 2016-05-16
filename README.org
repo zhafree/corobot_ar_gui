@@ -2,13 +2,13 @@
 
 * Prerequisites
   + http://wiki.ros.org
-  + http://wiki.ros.org/web_video_server
   + http://wiki.ros.org/roslibjs
   + https://github.com/creationix/nvm
 
 * Install
 #+begin_src shell
 cd <Your ROS workspace>/src
+git clone https://github.com/lukeqsun/web_video_server.git
 git clone https://github.com/lukeqsun/corobot_ar_gui.git
 cd corobot_ar_gui
 npm install
@@ -21,18 +21,15 @@ catkin_make
 #For using fake kinect data
 Change config->source.json: "Setting": 0
 
-#For using Gazebo simulator
-Change config->source.json: "Setting": 1
-roslaunch turtlebot_gazebo turtlebot_world.launch
-roslaunch turtlebot_teleop keyboard_teleop.launch
-
-#For using corobot
+#For using with the corobot or in the Gazebo simulator
 Change config->source.json: "Setting": 2
-roslaunch corobot_bringup 3dsensor.launch
 roslaunch corobot_bringup minimal.launch
+roslaunch corobot_bringup 3dsensor.launch
+roslaunch corobot_bringup apps.launch
 
-#Optional: to reduce odom delay
-rosrun topic_tools drop odom 9 10 ar/odom
+#Optional: to subscribe the default topics
+rosrun topic_tools drop pose 9 10 cari/pose
+rosrun topic_tools waypoints 1 1 cari/waypoints
 
 #Launch the main framework
 roslaunch corobot_ar_gui ar_gui.launch
