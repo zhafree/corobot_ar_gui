@@ -36,12 +36,6 @@ var createARCanvas = function( p ) {
     //messageType : "corobot_common/Pose",
     queue_size: 1
   }).subscribe(function(msg) {
-    for (var i = 0; i < numSegments; i++) {
-      x[i] = 0.0;
-      y[i] = 0.0;
-      angle[i] = 0.0;
-    }
-
     xin = msg.x * mapFactor;
     yin = 1024 - msg.y * mapFactor2;
 

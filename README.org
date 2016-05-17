@@ -31,6 +31,10 @@ roslaunch corobot_bringup apps.launch
 rosrun topic_tools drop pose 9 10 cari/pose
 rosrun topic_tools waypoints 1 1 cari/waypoints
 
+#Optional: or publish some test topics
+rostopic pub -1 /cari/pose geometry_msgs/Point -- 73.6 37.4 -3.92
+rostopic pub -1 /cari/waypoints geometry_msgs/Point -- 70.2 37.4 0.0
+
 #Launch the main framework
 roslaunch corobot_ar_gui ar_gui.launch
 #+end_src
