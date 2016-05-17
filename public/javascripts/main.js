@@ -24,7 +24,9 @@ var CanvasConfig = {
     "x": 0,
     "y": 0
   },
-  "scale": 1
+  "scale": 1,
+  "mapWidth": 4096.0,
+  "mapHeight": 1024.0 // scaled from 1440 for mips
 };
 
 function updateCanvasConfig(w, h) {
@@ -55,6 +57,12 @@ kBuffer.width = CanvasConfig.minWidth;
 kBuffer.height = CanvasConfig.minHeight;
 var kbContext = kBuffer.getContext('2d');
 var kbData = kbContext.createImageData(CanvasConfig.minWidth, CanvasConfig.minHeight);
+
+var mapBuffer = document.createElement('canvas');
+mapBuffer.width = CanvasConfig.mapWidth;
+mapBuffer.height = CanvasConfig.mapHeight;
+var mapBufferContext = mapBuffer.getContext('2d');
+var mapBufferData = mapBufferContext.createImageData(CanvasConfig.mapWidth, CanvasConfig.mapHeight);
 
 var rgbImage = new Image();
 var rgbTexture = new THREE.Texture( rgbImage );
@@ -95,10 +103,11 @@ kinectSource.addEventListener('depthupdate', function(event) {
 // create all canvas components
 // Main canvas for background
 var bgCanvas;
+
 function setup() {
   bgCanvas = createCanvas(windowWidth, windowHeight);
   bgCanvas.id("bgCanvas");
-  bgCanvas.parent("hideView");
+  bgCanvas.parent("showView");
   bgCanvas.position(0, 0);
 
   background(0);
@@ -117,7 +126,7 @@ var rgbdCanvas = new p5(createRGBDCanvas, "uiView");
 var auiCanvas = new p5(createAUICanvas, "uiView");
 
 // AR Overlay for creative AR components dsiplay with p5.js
-var arCanvas = new p5(createARCanvas, "showView");
+var arCanvas = new p5(createARCanvas, "hideView");
 
 // RGB-D & AR mix canvas for kinect view display with Three.js
 var kpointView = new KinectPoint("threeView");

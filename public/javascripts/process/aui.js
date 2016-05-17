@@ -24,23 +24,25 @@ var createAUICanvas = function( p ) {
         yin = 0,
         ain = 0;
 
-    // Test data
-    xin = 73.6 * mapFactor;
-    yin = 1440 - 37.4 * mapFactor;
-    ain = -3.92;
-    // Waypoint Test
-    //xin = 70.2 * mapFactor;
-    //yin = 1440 - 37.3 * mapFactor;
+    // Pose Test data
+    //xin = 73.6 * mapFactor;
+    //yin = 1440 - 37.4 * mapFactor;
+    //ain = -3.92;
+    // Waypoint Test data
+    //xin = 70.2* mapFactor;
+    //yin = 1440 - 37.4 * mapFactor;
+    //ain = -3.665;
 
     var poseSubscriber = new ROSLIB.Topic({
         ros : ros,
         name : "/cari/pose",
-        messageType : "corobot_common/Pose",
+        messageType : "geometry_msgs/Point",
+        //messageType : "corobot_common/Pose",
         queue_size: 1
     }).subscribe(function(msg) {
-        //xin = msg.x * mapFactor;
-        //yin = 1440 - msg.y * mapFactor;
-        //ain = -msg.theta;
+        xin = msg.x * mapFactor;
+        yin = 1440 - msg.y * mapFactor;
+        ain = -msg.theta;
     });
 
     p.preload = function() {

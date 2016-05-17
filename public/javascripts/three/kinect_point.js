@@ -18,6 +18,7 @@ var KinectPoint = function(div_id) {
     var kinectXFactor = 0.1,
         kinectZFactor = 0.1,
         mapFactor = 30.5,
+        mapFactor2 = 21.7,
         xin = 0,
         yin = 0,
         ain = 0;
@@ -26,27 +27,31 @@ var KinectPoint = function(div_id) {
         wp_xin = 0,
         wp_yin = 0;
 
-    // Test data
-    xin = 73.6 * mapFactor;
-    yin = 37.4 * mapFactor;
+    // Pose Test data
+    //xin = 73.6 * mapFactor;
+    //yin = 37.4 * mapFactor2;
     ain = 3.92;
 
     // Math for map texture mapping
     var d_mapScale = 1.0;
     var d_mapFar = 10.0 * mapFactor * d_mapScale;
-    var xt_start = xin/4096.0;
-    var yt_start = yin/1440.0;
-    var xt_end = xt_start + d_mapFar * Math.cos(ain)/4096.0;
-    var yt_end = yt_start + d_mapFar * Math.sin(ain)/1440.0;
-    var bricks = [
-        new THREE.Vector2(xt_start + d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / 4096.0,
-                          yt_start - d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / 1440.0),
-        new THREE.Vector2(xt_end + d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / 4096.0,
-                          yt_end - d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / 1440.0),
-        new THREE.Vector2(xt_end - d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / 4096.0,
-                          yt_end + d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / 1440.0),
-        new THREE.Vector2(xt_start - d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / 4096.0,
-                          yt_start + d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / 1440.0)
+
+    var mw = 4096.0;
+    var mh = 1024.0;
+
+    xt_start = xin/mw;
+    yt_start = yin/mh;
+    xt_end = xt_start + d_mapFar * Math.cos(ain)/mw;
+    yt_end = yt_start + d_mapFar * Math.sin(ain)/mh;
+    bricks = [
+        new THREE.Vector2(xt_start + d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / mw,
+                          yt_start - d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / mh),
+        new THREE.Vector2(xt_end + d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / mw,
+                          yt_end - d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / mh),
+        new THREE.Vector2(xt_end - d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / mw,
+                          yt_end + d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / mh),
+        new THREE.Vector2(xt_start - d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / mw,
+                          yt_start + d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / mh)
     ];
 
     // Math for grid
@@ -56,18 +61,11 @@ var KinectPoint = function(div_id) {
     var gBottom = - 0.19 * (farClipping - nearClipping) * 0.83359,
         jStep = -gBottom/gNum/2.0;
 
-    //Math for Waypoint
-    wp_xin = 70.2 * mapFactor,
-    wp_yin = 37.3 * mapFactor;
-    var d_wpFar = Math.sqrt((xin - wp_xin) * (xin - wp_xin) + (yin - wp_yin) * (yin - wp_yin));
-    var wp_xend = -d_wpFar * Math.cos(ain + Math.atan((xin - wp_xin)/(yin - wp_yin))) * 16;
-    var wp_yend = -gSize/2 + d_wpFar * Math.sin(ain + Math.atan((xin - wp_xin)/(yin - wp_yin))) * 9.0;
-
     this.container = document.getElementById(div_id);
 
     this.stats = new Stats();
     this.stats.domElement.style.position = 'absolute';
-    this.stats.domElement.style.top = '0px';
+    this.stats.domElement.style.left = CanvasConfig.width/2 + 'px';
     //this.container.appendChild( this.stats.domElement );
 
     this.camera = new THREE.CombinedCamera( CanvasConfig.width / 2, CanvasConfig.height / 2, 58, 1, 5000, -1000, 5000 );
@@ -76,12 +74,26 @@ var KinectPoint = function(div_id) {
     this.camera.position.set(0, 200, -this.cameraRadius);
 
     this.scene = new THREE.Scene();
-    //this.scene.fog = new THREE.Fog( 0x000000, (nearClipping + farClipping)/2, nearClipping + farClipping );
+    this.scene.fog = new THREE.Fog( 0x000000, (nearClipping + farClipping)/2, nearClipping + farClipping );
+
+    //Waypoint Test Data
+    wp_xin = 70.2;
+    wp_yin = 37.4;
+
+    //FIXME: Math for Waypoint
+    var rxin = xin/mapFactor;
+    var ryin = yin/mapFactor2;
+    var d_wpFar = Math.sqrt((xin - wp_xin) * (xin - wp_xin) + (yin - wp_yin) * (yin - wp_yin))*100.0;
+    var wp_xend = d_wpFar * Math.cos(ain + Math.atan((yin - wp_yin)/(xin - wp_xin))) + flagSize/2;
+    var wp_yend = d_wpFar * Math.sin(ain + Math.atan((yin - wp_yin)/(xin - wp_xin)));
+    console.log(d_wpFar);
+    console.log(wp_xend);
+    console.log(wp_yend);
 
     // Draw map
-    var mapUrl = "/images/pointDataMapBlue.png";
-    var mapTexture = new THREE.TextureLoader().load(mapUrl);
-    mapTexture.minFilter = mapTexture.magFilter = THREE.LinearFilter;
+    var mapTexture = new THREE.Texture(mapBuffer);
+    mapTexture.minFilter = THREE.NearestFilter;
+    mapTexture.magFilter = THREE.LinearFilter;
     var mapMaterial = new THREE.MeshBasicMaterial({ map : mapTexture,
                                                     transparent: true,
                                                     opacity: 0.5});
@@ -149,13 +161,13 @@ var KinectPoint = function(div_id) {
     var flagMaterial = new THREE.MeshBasicMaterial({ map : flagTexture, transparent: true });
     var flagPlane = new THREE.Mesh(new THREE.PlaneGeometry(flagSize, flagSize), flagMaterial);
     flagPlane.material.side = THREE.DoubleSide;
-    flagPlane.position.x = -330; //wp_xend;
-    flagPlane.position.z = -10; //wp_yend;
+    flagPlane.position.x = wp_xend; //-330
+    flagPlane.position.z = wp_yend; //-10
     flagPlane.position.y = gBottom + flagSize/2;
     flagPlane.material.opacity = 1.0;
     this.scene.add( flagPlane );
 
-    this.renderer = new THREE.WebGLRenderer({ alpha: true });
+    this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias:true });
     this.renderer.domElement.style.position = 'absolute';
     this.renderer.domElement.style.top = CanvasConfig.position.y + "px";
     this.renderer.domElement.style.left = CanvasConfig.position.x + "px";
@@ -174,71 +186,33 @@ var KinectPoint = function(div_id) {
     this.render = function() {
         var timer = Date.now() * 0.0001;
 
+        mapTexture.needsUpdate = true;
+
         __this.workMode = new THREE.Vector4(Kinect.ColorMode.r, Kinect.ColorMode.g,
                                             Kinect.ColorMode.b, Kinect.ColorMode.a);
         pointMesh.material.uniforms.colorMode.value = __this.workMode;
 
+        // Rotate the camera for Test
         //__this.camera.position.x = Math.cos( -Math.PI/2 - timer) * __this.cameraRadius;
         //__this.camera.position.z = Math.sin( -Math.PI/2 - timer) * __this.cameraRadius;
 
-        //xin = msg.x * mapFactor;
-        //yin = msg.y * mapFactor;
+        // Rotate the ground for Test
+        /*
         ain = timer;
 
-        xt_start = xin/4096.0;
-        yt_start = yin/1440.0;
-        xt_end = xt_start + d_mapFar * Math.cos(ain)/4096.0;
-        yt_end = yt_start + d_mapFar * Math.sin(ain)/1440.0;
+        xt_start = xin/mw;
+        yt_start = yin/mh;
+        xt_end = xt_start + d_mapFar * Math.cos(ain)/mw;
+        yt_end = yt_start + d_mapFar * Math.sin(ain)/mh;
         bricks = [
-            new THREE.Vector2(xt_start + d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / 4096.0,
-                              yt_start - d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / 1440.0),
-            new THREE.Vector2(xt_end + d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / 4096.0,
-                              yt_end - d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / 1440.0),
-            new THREE.Vector2(xt_end - d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / 4096.0,
-                              yt_end + d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / 1440.0),
-            new THREE.Vector2(xt_start - d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / 4096.0,
-                              yt_start + d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / 1440.0)
-        ];
-
-        //__this.gridLines.rotation.y = -ain;
-
-        var mapGeometryTemp = new THREE.PlaneGeometry(gSize * 2, gSize * 2);
-        mapGeometryTemp.faceVertexUvs[0] = [];
-        mapGeometryTemp.faceVertexUvs[0].push([ bricks[0], bricks[1], bricks[3] ]);
-        mapGeometryTemp.faceVertexUvs[0].push([ bricks[1], bricks[2], bricks[3] ]);
-        //__this.mapPlane.geometry = mapGeometryTemp;
-        //__this.mapPlane.geometry.needsUpdate = true;
-
-        if ( __this.lookAtScene )
-            __this.camera.lookAt( __this.scene.position );
-
-        __this.renderer.render( __this.scene, __this.camera );
-    };
-
-    var poseSubscriber = new ROSLIB.Topic({
-        ros : ros,
-        name : "/cari/pose",
-        messageType : "corobot_common/Pose",
-        queue_size: 1
-    }).subscribe(function(msg) {
-        /*
-        xin = msg.x * mapFactor;
-        yin = msg.y * mapFactor;
-        ain = msg.theta;
-
-        xt_start = xin/4096.0;
-        yt_start = yin/1440.0;
-        xt_end = xt_start + d_mapFar * Math.cos(ain)/4096.0;
-        yt_end = yt_start + d_mapFar * Math.sin(ain)/1440.0;
-        bricks = [
-            new THREE.Vector2(xt_start + d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / 4096.0,
-                              yt_start - d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / 1440.0),
-            new THREE.Vector2(xt_end + d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / 4096.0,
-                              yt_end - d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / 1440.0),
-            new THREE.Vector2(xt_end - d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / 4096.0,
-                              yt_end + d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / 1440.0),
-            new THREE.Vector2(xt_start - d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / 4096.0,
-                              yt_start + d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / 1440.0)
+            new THREE.Vector2(xt_start + d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / mw,
+                              yt_start - d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / mh),
+            new THREE.Vector2(xt_end + d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / mw,
+                              yt_end - d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / mh),
+            new THREE.Vector2(xt_end - d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / mw,
+                              yt_end + d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / mh),
+            new THREE.Vector2(xt_start - d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / mw,
+                              yt_start + d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / mh)
         ];
 
         __this.gridLines.rotation.y = -ain;
@@ -250,6 +224,47 @@ var KinectPoint = function(div_id) {
         __this.mapPlane.geometry = mapGeometryTemp;
         //__this.mapPlane.geometry.needsUpdate = true;
         */
+
+        if ( __this.lookAtScene )
+            __this.camera.lookAt( __this.scene.position );
+
+        __this.renderer.render( __this.scene, __this.camera );
+    };
+
+    var poseSubscriber = new ROSLIB.Topic({
+        ros : ros,
+        name : "/cari/pose",
+        messageType : "geometry_msgs/Point",
+        //messageType : "corobot_common/Pose",
+        queue_size: 1
+    }).subscribe(function(msg) {
+        xin = msg.x * mapFactor;
+        yin = msg.y * mapFactor2;
+        //ain = msg.theta;
+
+        xt_start = xin/mw;
+        yt_start = yin/mh;
+        xt_end = xt_start + d_mapFar * Math.cos(ain)/mw;
+        yt_end = yt_start + d_mapFar * Math.sin(ain)/mh;
+        bricks = [
+        new THREE.Vector2(xt_start + d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / mw,
+        yt_start - d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / mh),
+        new THREE.Vector2(xt_end + d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / mw,
+        yt_end - d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / mh),
+        new THREE.Vector2(xt_end - d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / mw,
+        yt_end + d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / mh),
+        new THREE.Vector2(xt_start - d_mapFar * 0.5 * Math.cos(Math.PI/2 - ain) / mw,
+        yt_start + d_mapFar * 0.5 * Math.sin(Math.PI/2 - ain) / mh)
+        ];
+
+        __this.gridLines.rotation.y = -ain;
+
+        var mapGeometryTemp = new THREE.PlaneGeometry(gSize * 2, gSize * 2);
+        mapGeometryTemp.faceVertexUvs[0] = [];
+        mapGeometryTemp.faceVertexUvs[0].push([ bricks[0], bricks[1], bricks[3] ]);
+        mapGeometryTemp.faceVertexUvs[0].push([ bricks[1], bricks[2], bricks[3] ]);
+        __this.mapPlane.geometry = mapGeometryTemp;
+        //__this.mapPlane.geometry.needsUpdate = true;
     });
 
     var waypoint = new ROSLIB.Topic({
@@ -258,8 +273,13 @@ var KinectPoint = function(div_id) {
         messageType : "geometry_msgs/Point",
         queue_size: 1
     }).subscribe(function(msg) {
-        // TODO
-        //console.log("waypointsSubscriber: " + JSON.stringify(msg));
+        wp_xin = msg.x;
+        wp_yin = msg.y;
+
+        //TODO
+
+        flagPlane.position.x = wp_xend;
+        flagPlane.position.z = wp_yend;
     });
 
     // Unused
