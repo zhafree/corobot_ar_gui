@@ -19,19 +19,36 @@ zebra.package("ui.ros", function(pkg, Class) {
             modePanel.setPreferredSize(320, 666);
             modePanel.setPadding(4);
 
+            var buttonLabel2 = new Label("Enter edge detection mode");
+            var pointCloudButton2 = new Button(buttonLabel2).properties({ canHaveFocus: false });
+            pointCloudButton2.bind(function (src) {
+                if (Kinect.ColorMode.a > 0.3) {
+                    Kinect.ColorMode.a = 0.0;
+                    buttonLabel2.setValue("Enter edge detection mode");
+                    buttonLabel.setValue("Enter collision detection mode");
+                } else {
+                    Kinect.ColorMode.a = 0.4;
+                    buttonLabel2.setValue("Exit edge detection mode");
+                    buttonLabel.setValue("Enter collision detection mode");
+                }
+            });
+
             var buttonLabel = new Label("Enter collision detection mode");
             var pointCloudButton = new Button(buttonLabel).properties({ canHaveFocus: false });
             pointCloudButton.bind(function (src) {
-                if (Kinect.ColorMode.a > 0.1) {
+                if (Kinect.ColorMode.a > 0.1 && Kinect.ColorMode.a < 0.3) {
                     Kinect.ColorMode.a = 0.0;
                     buttonLabel.setValue("Enter collision detection mode");
+                    buttonLabel2.setValue("Enter edge detection mode");
                 } else {
                     Kinect.ColorMode.a = 0.2;
                     buttonLabel.setValue("Exit collision detection mode");
+                    buttonLabel2.setValue("Enter edge detection mode");
                 }
             });
 
             modePanel.add(pointCloudButton);
+            modePanel.add(pointCloudButton2);
 
             return modePanel;
         },

@@ -120,10 +120,10 @@ updateCanvasConfig(window.innerWidth, window.innerHeight);
 var zebraCanvas = new p5(createZebraCanvas, "uiView");
 
 // Auxiliary UI canvas for kinect RGB thumbnail view with P5.js
-var rgbdCanvas = new p5(createRGBDCanvas, "uiView");
+//var rgbdCanvas = new p5(createRGBDCanvas, "uiView");
 
 // Auxiliary UI canvas for navigation map with P5.js
-var auiCanvas = new p5(createAUICanvas, "uiView");
+//var auiCanvas = new p5(createAUICanvas, "uiView");
 
 // AR Overlay for creative AR components dsiplay with p5.js
 var arCanvas = new p5(createARCanvas, "hideView");

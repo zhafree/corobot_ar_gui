@@ -54,7 +54,7 @@ var createARCanvas = function( p ) {
   });
 
   p.setup = function() {
-    p.pixelDensity(1);
+    //p.pixelDensity(1);
 
     var c = p.createCanvas(CanvasConfig.mapWidth, CanvasConfig.mapHeight);
     c.id("arCanvas");
@@ -107,7 +107,7 @@ var createARCanvas = function( p ) {
 
   function crossHead(x, y, a) {
     var chl = 12;
-    p.strokeWeight(4);
+    p.strokeWeight(3);
     p.push();
     p.translate(x, y);
     p.rotate(a + Math.PI/4);
@@ -130,7 +130,7 @@ var createARCanvas = function( p ) {
   }
 
   function segmentHead(x, y, a, sw) {
-    p.strokeWeight(1);
+    p.strokeWeight(0.5);
     p.push();
     p.translate(x, y);
     p.rotate(a);
@@ -139,7 +139,7 @@ var createARCanvas = function( p ) {
   }
 
   function segment(x, y, a, sw) {
-    p.strokeWeight(1);
+    p.strokeWeight(0.5);
     p.push();
     p.translate(x, y);
     p.rotate(a);

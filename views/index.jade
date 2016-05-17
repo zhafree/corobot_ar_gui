@@ -26,10 +26,18 @@ html(lang="en")
     script(src='/javascripts/libs/three/js/libs/stats.min.js')
     script(src='/javascripts/libs/three/js/Detector.js')
     script(src='/javascripts/libs/three/js/cameras/CombinedCamera.js')
-    script#vs(type='x-shader/x-vertex')
+    script#kpvs(type='x-shader/x-vertex')
       include ../public/javascripts/three/kinect_point_vs.js
-    script#fs(type='x-shader/x-fragment')
+    script#kpfs(type='x-shader/x-fragment')
       include ../public/javascripts/three/kinect_point_fs.js
+    script#edvs(type='x-shader/x-vertex')
+      include ../public/javascripts/three/edge_detect_vs.js
+    script#edfs(type='x-shader/x-fragment')
+      include ../public/javascripts/three/edge_detect_fs.js
+    script#bsvs(type='x-shader/x-vertex')
+      include ../public/javascripts/three/buffer_scene_vs.js
+    script#bsfs(type='x-shader/x-fragment')
+      include ../public/javascripts/three/buffer_scene_fs.js
     script(src='/javascripts/three/kinect_point.js')
 
     // load zebra scripts, the import order matters...

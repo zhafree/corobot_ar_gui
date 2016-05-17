@@ -73,27 +73,23 @@ var KinectPoint = function(div_id) {
     this.cameraRadius = gSize;
     this.camera.position.set(0, 200, -this.cameraRadius);
 
-    this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.Fog( 0x000000, (nearClipping + farClipping)/2, nearClipping + farClipping );
-
     //Waypoint Test Data
     wp_xin = 70.2;
-    wp_yin = 37.4;
+    wp_yin = 35.4;
 
     //FIXME: Math for Waypoint
     var rxin = xin/mapFactor;
     var ryin = yin/mapFactor2;
-    var d_wpFar = Math.sqrt((xin - wp_xin) * (xin - wp_xin) + (yin - wp_yin) * (yin - wp_yin))*100.0;
-    var wp_xend = d_wpFar * Math.cos(ain + Math.atan((yin - wp_yin)/(xin - wp_xin))) + flagSize/2;
-    var wp_yend = d_wpFar * Math.sin(ain + Math.atan((yin - wp_yin)/(xin - wp_xin)));
+    var d_wpFar = Math.sqrt((xin - wp_xin) * (xin - wp_xin) + (yin - wp_yin) * (yin - wp_yin));
+    var wp_xend = d_wpFar * Math.cos(ain + Math.atan((yin - wp_yin)/(xin - wp_xin))) * 10;
+    var wp_yend = d_wpFar * Math.sin(ain + Math.atan((yin - wp_yin)/(xin - wp_xin))) * 10 + this.cameraRadius;
     console.log(d_wpFar);
     console.log(wp_xend);
     console.log(wp_yend);
 
     // Draw map
     var mapTexture = new THREE.Texture(mapBuffer);
-    mapTexture.minFilter = THREE.NearestFilter;
-    mapTexture.magFilter = THREE.LinearFilter;
+    mapTexture.minFilter =  mapTexture.magFilter = THREE.LinearFilter;
     var mapMaterial = new THREE.MeshBasicMaterial({ map : mapTexture,
                                                     transparent: true,
                                                     opacity: 0.5});
@@ -107,7 +103,6 @@ var KinectPoint = function(div_id) {
     this.mapPlane.position.z = gSize/2;
     this.mapPlane.rotation.x = -Math.PI/2;
     //mapPlane.rotation.y = ain;
-    this.scene.add( this.mapPlane );
 
     // Draw grid
     var gridGeometry = new THREE.Geometry();
@@ -120,7 +115,6 @@ var KinectPoint = function(div_id) {
     var gridMaterial = new THREE.LineBasicMaterial( { color: 0xff0000, opacity: 0.5 } );
     this.gridLines = new THREE.LineSegments( gridGeometry, gridMaterial );
     this.gridLines.rotation.y = -ain;
-    this.scene.add( this.gridLines );
 
     // Kinect points
     var pointGeometry = new THREE.BufferGeometry();
@@ -146,28 +140,27 @@ var KinectPoint = function(div_id) {
             "pointSize": { type: "f", value: 5 },
             "colorMode": { type: "4fv", value: this.workMode}
         },
-        vertexShader: document.getElementById( 'vs' ).textContent,
-        fragmentShader: document.getElementById( 'fs' ).textContent,
+        vertexShader: document.getElementById( 'kpvs' ).textContent,
+        fragmentShader: document.getElementById( 'kpfs' ).textContent,
         blending: THREE.NormalBlending,
         depthTest: true, depthWrite: true,
         transparent: true
     } );
-    var pointMesh = new THREE.Points( pointGeometry, pointMaterial );
-    this.scene.add( pointMesh );
+    this.pointMesh = new THREE.Points( pointGeometry, pointMaterial );
 
     var flagUrl = "/images/flag.png";
     var flagTexture = new THREE.TextureLoader().load(flagUrl);
     flagTexture.minFilter = flagTexture.magFilter = THREE.LinearFilter;
     var flagMaterial = new THREE.MeshBasicMaterial({ map : flagTexture, transparent: true });
-    var flagPlane = new THREE.Mesh(new THREE.PlaneGeometry(flagSize, flagSize), flagMaterial);
-    flagPlane.material.side = THREE.DoubleSide;
-    flagPlane.position.x = wp_xend; //-330
-    flagPlane.position.z = wp_yend; //-10
-    flagPlane.position.y = gBottom + flagSize/2;
-    flagPlane.material.opacity = 1.0;
-    this.scene.add( flagPlane );
+    this.flagPlane = new THREE.Mesh(new THREE.PlaneGeometry(flagSize, flagSize), flagMaterial);
+    this.flagPlane.material.side = THREE.DoubleSide;
+    this.flagPlane.position.x = wp_xend; //-330
+    this.flagPlane.position.z = wp_yend; //-10
+    this.flagPlane.position.y = gBottom + flagSize/2;
+    this.flagPlane.material.opacity = 1.0;
 
-    this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias:true });
+    this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias:true,
+                                              premultipliedAlpha : false});
     this.renderer.domElement.style.position = 'absolute';
     this.renderer.domElement.style.top = CanvasConfig.position.y + "px";
     this.renderer.domElement.style.left = CanvasConfig.position.x + "px";
@@ -175,6 +168,53 @@ var KinectPoint = function(div_id) {
     this.renderer.setPixelRatio( CanvasConfig.width / CanvasConfig.height );
     this.renderer.setSize( CanvasConfig.width, CanvasConfig.height );
     this.container.appendChild( this.renderer.domElement );
+
+    // Real scene
+    this.scene = new THREE.Scene();
+    this.scene.fog = new THREE.Fog( 0x000000, (nearClipping + farClipping)/2, nearClipping + farClipping );
+    this.sceneTexture = new THREE.WebGLRenderTarget( CanvasConfig.width, CanvasConfig.height, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter});
+
+    // scene objects for detection only
+    this.detectObjectScene = new THREE.Scene();
+    this.detectObjectTexture = new THREE.WebGLRenderTarget( CanvasConfig.width, CanvasConfig.height, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter});
+
+    // Edge detection scene
+    this.detectScene = new THREE.Scene();
+    this.detectTexture = new THREE.WebGLRenderTarget( CanvasConfig.width, CanvasConfig.height, { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter});
+    var detectMaterial = new THREE.ShaderMaterial( {
+        uniforms: {
+            "sceneMap": { type: "t", value: this.detectObjectTexture },
+            "width": { type: "f", value: CanvasConfig.width },
+            "height": { type: "f", value: CanvasConfig.height },
+        },
+        vertexShader: document.getElementById( 'edvs' ).textContent,
+        fragmentShader: document.getElementById( 'edfs' ).textContent,
+        blending: THREE.NormalBlending,
+        depthTest: true, depthWrite: true,
+        transparent: false
+    } );
+    var detectPlane = new THREE.Mesh(new THREE.PlaneGeometry(CanvasConfig.width, CanvasConfig.height), detectMaterial);
+    detectPlane.material.side = THREE.DoubleSide;
+
+    // Create a different scene to hold our buffer objects
+    this.bufferCamera = new THREE.OrthographicCamera( CanvasConfig.width / - 2, CanvasConfig.width / 2, CanvasConfig.height / 2, CanvasConfig.height / - 2, -100, 1000 );
+
+    this.bufferScene = new THREE.Scene();
+    var bufferMaterial = new THREE.ShaderMaterial( {
+        uniforms: {
+            "sceneMap": { type: "t", value: this.sceneTexture },
+            "edgeMap": { type: "t", value: this.detectTexture },
+            "width": { type: "f", value: CanvasConfig.width },
+            "height": { type: "f", value: CanvasConfig.height },
+        },
+        vertexShader: document.getElementById( 'bsvs' ).textContent,
+        fragmentShader: document.getElementById( 'bsfs' ).textContent,
+        blending: THREE.NormalBlending,
+        depthTest: true, depthWrite: true,
+        transparent: false
+    } );
+    var bufferPlane = new THREE.Mesh(new THREE.PlaneGeometry(CanvasConfig.width, CanvasConfig.height), bufferMaterial);
+    bufferPlane.material.side = THREE.DoubleSide;
 
     this.animate = function() {
         requestAnimationFrame(__this.animate.bind(__this));
@@ -190,7 +230,7 @@ var KinectPoint = function(div_id) {
 
         __this.workMode = new THREE.Vector4(Kinect.ColorMode.r, Kinect.ColorMode.g,
                                             Kinect.ColorMode.b, Kinect.ColorMode.a);
-        pointMesh.material.uniforms.colorMode.value = __this.workMode;
+        __this.pointMesh.material.uniforms.colorMode.value = __this.workMode;
 
         // Rotate the camera for Test
         //__this.camera.position.x = Math.cos( -Math.PI/2 - timer) * __this.cameraRadius;
@@ -228,7 +268,30 @@ var KinectPoint = function(div_id) {
         if ( __this.lookAtScene )
             __this.camera.lookAt( __this.scene.position );
 
-        __this.renderer.render( __this.scene, __this.camera );
+        // Render the real scene
+        __this.scene.add( __this.mapPlane );
+        __this.scene.add( __this.gridLines );
+        __this.scene.add( __this.pointMesh );
+        __this.scene.add( __this.flagPlane );
+
+        if (Kinect.ColorMode.a < 0.3) {
+            __this.renderer.render(__this.scene, __this.camera);
+        } else {
+            __this.renderer.render(__this.scene, __this.camera, __this.sceneTexture);
+
+            // Render the objects for detection only
+            __this.detectObjectScene.add( __this.mapPlane );
+            __this.detectObjectScene.add( __this.pointMesh );
+            __this.renderer.render(__this.detectObjectScene, __this.camera, __this.detectObjectTexture);
+
+            // Perform edge detection
+            __this.detectScene.add( detectPlane );
+            __this.renderer.render(__this.detectScene, __this.bufferCamera, __this.detectTexture);
+
+            // Render the visiable scene using the two textures above
+            __this.bufferScene.add( bufferPlane );
+            __this.renderer.render( __this.bufferScene, __this.bufferCamera);
+        }
     };
 
     var poseSubscriber = new ROSLIB.Topic({
@@ -273,13 +336,13 @@ var KinectPoint = function(div_id) {
         messageType : "geometry_msgs/Point",
         queue_size: 1
     }).subscribe(function(msg) {
-        wp_xin = msg.x;
-        wp_yin = msg.y;
+        //wp_xin = msg.x;
+        //wp_yin = msg.y;
 
         //TODO
 
-        flagPlane.position.x = wp_xend;
-        flagPlane.position.z = wp_yend;
+        //__this.flagPlane.position.x = wp_xend;
+        //__this.flagPlane.position.z = wp_yend;
     });
 
     // Unused
