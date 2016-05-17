@@ -30,7 +30,7 @@ var KinectPoint = function(div_id) {
     // Pose Test data
     //xin = 73.6 * mapFactor;
     //yin = 37.4 * mapFactor2;
-    ain = 3.92;
+    //ain = 3.92;
 
     // Math for map texture mapping
     var d_mapScale = 1.0;
@@ -83,16 +83,13 @@ var KinectPoint = function(div_id) {
     var d_wpFar = Math.sqrt((xin - wp_xin) * (xin - wp_xin) + (yin - wp_yin) * (yin - wp_yin));
     var wp_xend = d_wpFar * Math.cos(ain + Math.atan((yin - wp_yin)/(xin - wp_xin))) * 10;
     var wp_yend = d_wpFar * Math.sin(ain + Math.atan((yin - wp_yin)/(xin - wp_xin))) * 10 + this.cameraRadius;
-    console.log(d_wpFar);
-    console.log(wp_xend);
-    console.log(wp_yend);
 
     // Draw map
     var mapTexture = new THREE.Texture(mapBuffer);
     mapTexture.minFilter =  mapTexture.magFilter = THREE.LinearFilter;
     var mapMaterial = new THREE.MeshBasicMaterial({ map : mapTexture,
                                                     transparent: true,
-                                                    opacity: 0.5});
+                                                    opacity: 0.9});
     var mapGeometry = new THREE.PlaneGeometry(gSize * 2, gSize * 2);
     mapGeometry.faceVertexUvs[0] = [];
     mapGeometry.faceVertexUvs[0].push([ bricks[0], bricks[1], bricks[3] ]);
@@ -272,7 +269,7 @@ var KinectPoint = function(div_id) {
         __this.scene.add( __this.mapPlane );
         __this.scene.add( __this.gridLines );
         __this.scene.add( __this.pointMesh );
-        __this.scene.add( __this.flagPlane );
+        //__this.scene.add( __this.flagPlane );
 
         if (Kinect.ColorMode.a < 0.3) {
             __this.renderer.render(__this.scene, __this.camera);
@@ -297,13 +294,13 @@ var KinectPoint = function(div_id) {
     var poseSubscriber = new ROSLIB.Topic({
         ros : ros,
         name : "/cari/pose",
-        messageType : "geometry_msgs/Point",
+        //messageType : "geometry_msgs/Point",
         //messageType : "corobot_common/Pose",
         queue_size: 1
     }).subscribe(function(msg) {
         xin = msg.x * mapFactor;
         yin = msg.y * mapFactor2;
-        //ain = msg.theta;
+        ain = msg.theta;
 
         xt_start = xin/mw;
         yt_start = yin/mh;

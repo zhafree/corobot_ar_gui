@@ -32,8 +32,8 @@ var createARCanvas = function( p ) {
   var poseSubscriber = new ROSLIB.Topic({
     ros : ros,
     name : "/cari/pose",
-    messageType : "geometry_msgs/Point",
-    //messageType : "corobot_common/Pose",
+    //messageType : "geometry_msgs/Point",
+    messageType : "corobot_common/Pose",
     queue_size: 1
   }).subscribe(function(msg) {
     xin = msg.x * mapFactor;

@@ -1,6 +1,5 @@
-
 {
-  "Setting": 0,
+  "Setting": 2,
   "Ports": {
     "rosbridge_server_port": 9090,
     "web_video_server_port": 8080,
