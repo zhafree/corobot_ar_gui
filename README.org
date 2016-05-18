@@ -4,6 +4,7 @@
   + http://wiki.ros.org
   + http://wiki.ros.org/roslibjs
   + https://github.com/creationix/nvm
+  + https://github.com/corobotics
 
 * Install
 #+begin_src shell
