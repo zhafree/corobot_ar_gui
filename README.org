@@ -29,7 +29,7 @@ roslaunch corobot_bringup apps.launch
 
 #Optional: to subscribe the default topics
 rosrun topic_tools drop pose 9 10 cari/pose
-rosrun topic_tools waypoints 1 1 cari/waypoints
+rosrun topic_tools drop waypoints 1 1 cari/waypoints
 
 #Optional: or publish some test topics
 rostopic pub -1 /cari/pose geometry_msgs/Point -- 73.6 37.4 -3.92
