@@ -1,26 +1,12 @@
 var createRGBDCanvas = function(p) {
     var img;
 
-    // p.setup = function() {
-    //   p.pixelDensity(1);
-    //
-    //   var c = p.createCanvas(CanvasConfig.minWidth/2, CanvasConfig.minHeight/2);
-    //   c.id("rgbdCanvas");
-    //   c.position(16, CanvasConfig.position.y/2 + 28);
-    //   //p.background('rgba(255, 0, 0, 0.2)');
-    //   p.noLoop();
-    //   //p.frameRate(30);
-    //
-    //   defaultScale = CanvasConfig.width/CanvasConfig.minWidth;
-    //   img = p.createImage(CanvasConfig.minWidth, CanvasConfig.minHeight);
-    // };
-
     p.setup = function() {
         p.pixelDensity(1);
 
-        var c = p.createCanvas(CanvasConfig.width, CanvasConfig.height);
+        var c = p.createCanvas(CanvasConfig.minWidth / 2, CanvasConfig.minHeight / 2);
         c.id("rgbdCanvas");
-        c.position((windowWidth - CanvasConfig.width) / 2, (windowHeight - CanvasConfig.height) / 2);
+        c.position(16, CanvasConfig.position.y / 2 + 28);
         //p.background('rgba(255, 0, 0, 0.2)');
         p.noLoop();
         //p.frameRate(30);
@@ -34,7 +20,7 @@ var createRGBDCanvas = function(p) {
         p.clear();
         p.push();
         //p.scale(CanvasConfig.scale);
-        p.scale(defaultScale);
+        p.scale(1.0 / defaultScale);
 
         var record = 0;
         var rx = 0;

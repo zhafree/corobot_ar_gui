@@ -1,6 +1,6 @@
 // Zebra UI frame
 zebra.ready(function() {
-    return;
+    // return;
 
     // import all classes, functions, constants
     // from zebra.ui, zebra.layout packages

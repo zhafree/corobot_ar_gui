@@ -1,8 +1,8 @@
 var createARCanvas = function(p) {
-    var mapUrl = "/images/oriental_a502_demo_blue.png";
-    var mapOrigin_x = -12.51;
-    var mapOrigin_y = -14.43;
-    var mapRes = 0.03;
+    var mapUrl = MapFileConfig.blue_map_url
+    var mapOrigin_x = MapFileConfig.origin_x;
+    var mapOrigin_y = MapFileConfig.origin_y;
+    var mapRes = MapFileConfig.resolution;
     var img;
 
     var mapFactor = 1.0 / mapRes;
@@ -25,7 +25,7 @@ var createARCanvas = function(p) {
 
     // Waypoint Test data
     // xin = -mapOrigin_x * mapFactor;
-    // yin = 1024 + mapOrigin_y * mapFactor;
+    // yin = MapFileConfig.height + mapOrigin_y * mapFactor;
     // wp_xin = 512;
     // wp_yin = 512;
 
@@ -36,7 +36,7 @@ var createARCanvas = function(p) {
         queue_size: 1
     }).subscribe(function(msg) {
         xin = -(mapOrigin_x - msg.position.x) * mapFactor;
-        yin = 1024 + (mapOrigin_y - msg.position.y) * mapFactor;
+        yin = MapFileConfig.height + (mapOrigin_y - msg.position.y) * mapFactor;
     });
 
     var globalPathSubscriber = new ROSLIB.Topic({
@@ -48,7 +48,7 @@ var createARCanvas = function(p) {
         globalPathLength = msg.poses.length;
         for (var i = 0; i < msg.poses.length; i++) {
             x[i] = -(mapOrigin_x - msg.poses[i].pose.position.x) * mapFactor;
-            y[i] = 1024 + (mapOrigin_y - msg.poses[i].pose.position.y) * mapFactor;
+            y[i] = MapFileConfig.height + (mapOrigin_y - msg.poses[i].pose.position.y) * mapFactor;
             var msg_rotation = new THREE.Euler().setFromQuaternion(msg.poses[i].pose.orientation);
             angle[i] = -msg_rotation.z;
         }
@@ -81,7 +81,7 @@ var createARCanvas = function(p) {
                 iPose.applyTransform(localPathTransform);
             }
             xl[i] = -(mapOrigin_x - iPose.position.x) * mapFactor;
-            yl[i] = 1024 + (mapOrigin_y - iPose.position.y) * mapFactor;
+            yl[i] = MapFileConfig.height + (mapOrigin_y - iPose.position.y) * mapFactor;
             var msg_rotation = new THREE.Euler().setFromQuaternion(iPose.orientation);
             anglel[i] = -msg_rotation.z;
         }
@@ -124,7 +124,7 @@ var createARCanvas = function(p) {
                 p.fill(0, 255, 0, 255);
                 crossHead(x[numSegments - 1], y[numSegments - 1], angle[numSegments - 1]);
                 for (var k = 0; k < numSegments; k++) {
-                    segment(x[k], y[k], angle[k], 0.3);
+                    segment(x[k], y[k], angle[k], 1);
                 }
             }
             // Draw local path
@@ -138,7 +138,7 @@ var createARCanvas = function(p) {
                 p.stroke(255, 0, 0, 255);
                 p.fill(255, 0, 0, 255);
                 for (var k = 0; k < numSegments; k++) {
-                    segment(xl[k], yl[k], anglel[k], 0.6);
+                    segment(xl[k], yl[k], anglel[k], 1);
                 }
             }
         }

@@ -10,8 +10,17 @@
         "rgb_url": "./public/images/test/snapshot002r.jpeg",
         "depth_url": "./public/images/test/snapshot002d.jpeg"
     },
-    "KinectCorobot": {
+    "KinectReal": {
         "rgb_url": "http://localhost:8080/stream?topic=/camera/rgb/image_raw",
         "depth_url": "http://localhost:8080/stream?topic=/camera/depth/image_raw"
+    },
+    "MapFile": {
+        "map_url": "/images/oriental_a502_demo.png",
+        "blue_map_url": "/images/oriental_a502_demo_blue.png",
+        "width": 1024,
+        "height": 1024,
+        "origin_x": -12.51,
+        "origin_y": -14.43,
+        "resolution": 0.03
     }
 }

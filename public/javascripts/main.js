@@ -2,6 +2,7 @@
 // 1. General ROS topics
 var ros = new ROSLIB.Ros();
 var ros_ip = JData.server_ip;
+var MapFileConfig = JData.map_file;
 
 // Connect to rosbridge_server
 ros.on('connection', function() {
@@ -25,8 +26,8 @@ var CanvasConfig = {
         "y": 0
     },
     "scale": 1,
-    "mapWidth": 1024.0,
-    "mapHeight": 1024.0
+    "mapWidth": MapFileConfig.width,
+    "mapHeight": MapFileConfig.height
 };
 
 function updateCanvasConfig(w, h) {
@@ -120,17 +121,16 @@ function setup() {
 updateCanvasConfig(window.innerWidth, window.innerHeight);
 
 // Auxiliary UI canvas for UI components display with Zebra
-// var zebraCanvas = new p5(createZebraCanvas, "uiView");
+var zebraCanvas = new p5(createZebraCanvas, "uiView");
 
 // Auxiliary UI canvas for kinect RGB thumbnail view with P5.js
 var rgbdCanvas = new p5(createRGBDCanvas, "uiView");
 
 // Auxiliary UI canvas for navigation map with P5.js
-// var auiCanvas = new p5(createAUICanvas, "uiView");
+var auiCanvas = new p5(createAUICanvas, "uiView");
 
 // AR Overlay for creative AR components dsiplay with p5.js
 var arCanvas = new p5(createARCanvas, "hideView");
 
 // RGB-D & AR mix canvas for kinect view display with Three.js
 var kpointView = new KinectPoint("threeView");
-var kpointView = new KinectPoint("arView");

@@ -13,14 +13,14 @@
     </node -->
 
     <node pkg="nodelet" type="nodelet" name="cari_rectify_rgb"
-        args="standalone image_proc/rectify" 
+        args="standalone image_proc/rectify"
         respawn="$(arg respawn)">
         <remap from="image_mono" to="/camera/rgb/image_raw" />
         <remap from="image_rect" to="/cari/rgb/image_rect" />
     </node>
 
     <node pkg="nodelet" type="nodelet" name="cari_rectify_depth"
-        args="standalone image_proc/rectify" 
+        args="standalone image_proc/rectify"
         respawn="$(arg respawn)">
         <remap from="image_mono" to="/camera/depth/image_raw" />
         <remap from="image_rect" to="/cari/depth/image_rect" />
@@ -35,6 +35,8 @@
         <remap from="depth_registered/camera_info" to="/cari/depth_registered/camera_info"/>
         <remap from="depth_registered/image_rect" to="/cari/depth_registered/image_rect"/>
     </node>
+
+    <node pkg="tf2_web_republisher" type="tf2_web_republisher" name="tf2_web_server"/>
 
     <node pkg="web_video_server" type="web_video_server" name="cari_web_video_server">
         <param name="port" value="8080" />

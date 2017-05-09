@@ -20,24 +20,20 @@ var KinectPoint = function(div_id) {
     var kinectXFactor = 0.1,
         kinectZFactor = 0.1;
 
-    var mapOrigin_x = -12.51;
-    var mapOrigin_y = -14.43;
-    var mapRes = 0.03;
+    var mapOrigin_x = MapFileConfig.origin_x;
+    var mapOrigin_y = MapFileConfig.origin_y;
+    var mapRes = MapFileConfig.resolution;
     var mapFactor = 1. / mapRes,
         xin = 0,
         yin = 0,
         ain = 0;
 
-    var flagSize = 100,
-        wp_xin = 0,
-        wp_yin = 0;
-
     // Math for map texture mapping
     var d_mapScale = 1.0;
     var d_mapFar = 10.0 * mapFactor * d_mapScale;
 
-    var mw = 1024.0;
-    var mh = 1024.0;
+    var mw = MapFileConfig.width;
+    var mh = MapFileConfig.height;
 
     xt_start = xin / mw;
     yt_start = yin / mh;
@@ -71,26 +67,17 @@ var KinectPoint = function(div_id) {
     this.camera = new THREE.CombinedCamera(CanvasConfig.width / 2, CanvasConfig.height / 2, 58, 1, 5000, -1000, 5000);
     this.lookAtScene = true;
     this.cameraRadius = gSize;
-    this.camera.position.set(0, 200, -this.cameraRadius);
-
-    //Waypoint Test Data
-    // wp_xin = 70.2;
-    // wp_yin = 35.4;
-
-    //FIXME: Math for Waypoint
-    // var rxin = xin / mapFactor;
-    // var ryin = yin / mapFactor;
-    // var d_wpFar = Math.sqrt((xin - wp_xin) * (xin - wp_xin) + (yin - wp_yin) * (yin - wp_yin));
-    // var wp_xend = d_wpFar * Math.cos(ain + Math.atan((yin - wp_yin) / (xin - wp_xin))) * 10;
-    // var wp_yend = d_wpFar * Math.sin(ain + Math.atan((yin - wp_yin) / (xin - wp_xin))) * 10 + this.cameraRadius;
+    this.camera.position.set(0, 0, -this.cameraRadius);
 
     // Draw map
     var mapTexture = new THREE.Texture(mapBuffer);
-    mapTexture.minFilter = mapTexture.magFilter = THREE.LinearFilter;
+    mapTexture.minFilter = THREE.LinearFilter;
+    mapTexture.magFilter = THREE.NearestFilter;
     var mapMaterial = new THREE.MeshBasicMaterial({
         map: mapTexture,
         transparent: true,
-        opacity: 0.9
+        opacity: 0.9,
+        blending: THREE.NormalBlending,
     });
     var mapGeometry = new THREE.PlaneGeometry(gSize * 2, gSize * 2);
     mapGeometry.faceVertexUvs[0] = [];
@@ -113,7 +100,9 @@ var KinectPoint = function(div_id) {
     }
     var gridMaterial = new THREE.LineBasicMaterial({
         color: 0xff0000,
-        opacity: 0.5
+        transparent: true,
+        opacity: 0.5,
+        blending: THREE.NoBlending,
     });
     this.gridLines = new THREE.LineSegments(gridGeometry, gridMaterial);
     this.gridLines.rotation.y = -ain;
@@ -187,19 +176,15 @@ var KinectPoint = function(div_id) {
     });
     this.pointMesh = new THREE.Points(pointGeometry, pointMaterial);
 
-    // var flagUrl = "/images/flag.png";
-    // var flagTexture = new THREE.TextureLoader().load(flagUrl);
-    // flagTexture.minFilter = flagTexture.magFilter = THREE.LinearFilter;
-    // var flagMaterial = new THREE.MeshBasicMaterial({
-    //     map: flagTexture,
-    //     transparent: true
-    // });
-    // this.flagPlane = new THREE.Mesh(new THREE.PlaneGeometry(flagSize, flagSize), flagMaterial);
-    // this.flagPlane.material.side = THREE.DoubleSide;
-    // this.flagPlane.position.x = wp_xend; //-330
-    // this.flagPlane.position.z = wp_yend; //-10
-    // this.flagPlane.position.y = gBottom + flagSize / 2;
-    // this.flagPlane.material.opacity = 1.0;
+    var rgbMaterial = new THREE.MeshBasicMaterial({
+        map: rgbTexture,
+    });
+    this.rgbPlane = new THREE.Mesh(new THREE.PlaneGeometry(width, height), rgbMaterial);
+    this.rgbPlane.material.side = THREE.DoubleSide;
+    this.rgbPlane.position.x = 0;
+    this.rgbPlane.position.z = 100;
+    this.rgbPlane.position.y = gBottom + height * 0.1;
+    this.rgbPlane.scale.x = -1
 
     this.renderer = new THREE.WebGLRenderer({
         alpha: true,
@@ -346,10 +331,10 @@ var KinectPoint = function(div_id) {
             __this.camera.lookAt(__this.scene.position);
 
         // Render the real scene
+        __this.scene.add(__this.rgbPlane);
         __this.scene.add(__this.mapPlane);
         __this.scene.add(__this.gridLines);
         // __this.scene.add(__this.pointMesh);
-        //__this.scene.add( __this.flagPlane );
 
         if (Kinect.ColorMode.a < 0.3) {
             __this.renderer.render(__this.scene, __this.camera);

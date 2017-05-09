@@ -20,7 +20,7 @@ catkin_make
 * Run
 #+begin_src shell
 #For using fake kinect data
-Change config->source.json: "Setting": 0
+Change config->source.json: "Setting": 1
 
 #For using with the corobot or in the Gazebo simulator
 Change config->source.json: "Setting": 2

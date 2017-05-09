@@ -5,6 +5,8 @@
 
     <node pkg="nodelet" type="nodelet" name="cari_nodelet"  args="manager"/>
 
+    <node pkg="tf2_web_republisher" type="tf2_web_republisher" name="tf2_web_server"/>
+
     <node pkg="web_video_server" type="web_video_server" name="cari_web_video_server">
         <param name="port" value="8080" />
     </node>

@@ -1,8 +1,8 @@
 var createAUICanvas = function(p) {
-    var mapUrl = "/images/oriental_a502_demo.png";
-    var mapOrigin_x = -12.51;
-    var mapOrigin_y = -14.43;
-    var mapRes = 0.03;
+    var mapUrl = MapFileConfig.map_url;
+    var mapOrigin_x = MapFileConfig.origin_x;
+    var mapOrigin_y = MapFileConfig.origin_y;
+    var mapRes = MapFileConfig.resolution;
     var mapImage;
     // scale
     var slider;
@@ -35,10 +35,7 @@ var createAUICanvas = function(p) {
         queue_size: 1
     }).subscribe(function(msg) {
         xin = msg.position.x * mapFactor;
-        if (mapImage)
-            yin = mapImage.height - msg.position.y * mapFactor;
-        else
-            yin = -msg.position.y * mapFactor;
+        yin = MapFileConfig.height - msg.position.y * mapFactor;
         var msg_rotation = new THREE.Euler().setFromQuaternion(msg.orientation);
         ain = -msg_rotation.z;
     });
