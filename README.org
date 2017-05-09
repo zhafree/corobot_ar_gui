@@ -9,8 +9,8 @@
 * Install
 #+begin_src shell
 cd <Your ROS workspace>/src
-git clone https://github.com/lukeqsun/web_video_server.git
 git clone https://github.com/lukeqsun/corobot_ar_gui.git
+rosdep install corobot_ar_gui
 cd corobot_ar_gui
 npm install
 cd <Your ROS workspace>
@@ -24,17 +24,10 @@ Change config->source.json: "Setting": 1
 
 #For using with the corobot or in the Gazebo simulator
 Change config->source.json: "Setting": 2
-roslaunch corobot_bringup minimal.launch
-roslaunch corobot_bringup 3dsensor.launch
-roslaunch corobot_bringup apps.launch
 
-#Optional: to subscribe the default topics
-rosrun topic_tools drop pose 9 10 cari/pose
-rosrun topic_tools drop waypoints 1 1 cari/waypoints
-
-#Optional: or publish some test topics
-rostopic pub -1 /cari/pose geometry_msgs/Point -- 73.6 37.4 -3.92
-rostopic pub -1 /cari/waypoints geometry_msgs/Point -- 70.2 37.4 0.0
+roslaunch test_slam_sim oriental_world.launch world_file:=`rospack find test_slam_sim`/worlds/oriental_a502_demo_20170414.world
+roslaunch test_slam_sim navigation.launch map_file:=`rospack find test_slam_sim`/maps/oriental_a502_demo_20170414.yaml
+roslaunch test_slam_sim view_navigation.launch
 
 #Launch the main framework
 roslaunch corobot_ar_gui ar_gui.launch
