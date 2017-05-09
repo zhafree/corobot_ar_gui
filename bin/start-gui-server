@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ ! -d "$HOME/.nvm" ]; then
+  # Control will enter here if $DIRECTORY doesn't exist.
+  wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
+  nvm install 5.5
+fi
+
 source $HOME/.nvm/nvm.sh
 
 nodeVersion=`nvm current`
@@ -11,7 +17,7 @@ fi
 
 if [ "$nodeVersion" = 'v5.5.0' ]; then
   pushd `dirname $0` > /dev/null
-  SCRIPTPATH=`pwd -P`  
+  SCRIPTPATH=`pwd -P`
   popd > /dev/null
 
   pushd "$SCRIPTPATH/.." > /dev/null

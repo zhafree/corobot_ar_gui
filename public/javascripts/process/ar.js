@@ -1,150 +1,194 @@
-var createARCanvas = function( p ) {
-  var mapUrl = "/images/pointDataMapBlue.png";
-  var img;
+var createARCanvas = function(p) {
+    var mapUrl = "/images/oriental_a502_demo_blue.png";
+    var mapOrigin_x = -12.51;
+    var mapOrigin_y = -14.43;
+    var mapRes = 0.03;
+    var img;
 
-  var mapFactor = 30.5,
-      mapFactor2 = 21.7;
+    var mapFactor = 1.0 / mapRes;
 
-  var xin = 0,
-      yin = 0,
-      wp_xin = 0,
-      wp_yin = 0;
+    var xin = 0,
+        yin = 0,
+        globalPathLength = 0,
+        localPathLength = 0;
 
-  // Waypoint Test data
-  //xin = 73.6 * mapFactor;
-  //yin = 1024 - 37.4 * mapFactor2;
-  //wp_xin = 70.2 * mapFactor;
-  //wp_yin = 1024 - 37.4 * mapFactor2;
+    var localPathTransform;
 
-  var numSegments = 5.0,
-      x = [],
-      y = [],
-      angle = [],
-      segLength = 4.0,
-      targetX, targetY;
+    var numSegments = 0,
+        x = [],
+        y = [],
+        angle = [],
+        xl = [],
+        yl = [],
+        anglel = [],
+        segLength = 4.0;
 
-  for (var i = 0; i < numSegments; i++) {
-    x[i] = 0.0;
-    y[i] = 0.0;
-    angle[i] = 0.0;
-  }
+    // Waypoint Test data
+    // xin = -mapOrigin_x * mapFactor;
+    // yin = 1024 + mapOrigin_y * mapFactor;
+    // wp_xin = 512;
+    // wp_yin = 512;
 
-  var poseSubscriber = new ROSLIB.Topic({
-    ros : ros,
-    name : "/cari/pose",
-    //messageType : "geometry_msgs/Point",
-    messageType : "corobot_common/Pose",
-    queue_size: 1
-  }).subscribe(function(msg) {
-    xin = msg.x * mapFactor;
-    yin = 1024 - msg.y * mapFactor2;
+    var poseSubscriber = new ROSLIB.Topic({
+        ros: ros,
+        name: "/cari/pose",
+        messageType: "geometry_msgs/Pose",
+        queue_size: 1
+    }).subscribe(function(msg) {
+        xin = -(mapOrigin_x - msg.position.x) * mapFactor;
+        yin = 1024 + (mapOrigin_y - msg.position.y) * mapFactor;
+    });
 
-    x[x.length-1] = xin;
-    y[x.length-1] = yin;
-  });
+    var globalPathSubscriber = new ROSLIB.Topic({
+        ros: ros,
+        name: "/move_base/NavfnROS/plan",
+        messageType: "nav_msgs/Path",
+        queue_size: 1
+    }).subscribe(function(msg) {
+        globalPathLength = msg.poses.length;
+        for (var i = 0; i < msg.poses.length; i++) {
+            x[i] = -(mapOrigin_x - msg.poses[i].pose.position.x) * mapFactor;
+            y[i] = 1024 + (mapOrigin_y - msg.poses[i].pose.position.y) * mapFactor;
+            var msg_rotation = new THREE.Euler().setFromQuaternion(msg.poses[i].pose.orientation);
+            angle[i] = -msg_rotation.z;
+        }
+    });
 
-  var waypointSubscriber = new ROSLIB.Topic({
-    ros : ros,
-    name : "/cari/waypoints",
-    messageType : "geometry_msgs/Point",
-    queue_size: 1
-  }).subscribe(function(msg) {
-    wp_xin = msg.x * mapFactor;
-    wp_yin = 1024 - msg.y * mapFactor2;
-  });
+    var tfClient = new ROSLIB.TFClient({
+        ros: ros,
+        fixedFrame: "map",
+        angularThres: 0.01,
+        transThres: 0.01
+    }).subscribe("odom", function(tf) {
+        localPathTransform = tf;
+    });
 
-  p.setup = function() {
-    //p.pixelDensity(1);
+    var localPathSubscriber = new ROSLIB.Topic({
+        ros: ros,
+        name: "/move_base/TebLocalPlannerROS/local_plan",
+        messageType: "nav_msgs/Path",
+        queue_size: 1
+    }).subscribe(function(msg) {
+        localPathLength = msg.poses.length;
+        // odom to map transform
 
-    var c = p.createCanvas(CanvasConfig.mapWidth, CanvasConfig.mapHeight);
-    c.id("arCanvas");
-    //c.position(CanvasConfig.position.x, CanvasConfig.position.y/2);
+        for (var i = 0; i < msg.poses.length; i++) {
+            var iPose = new ROSLIB.Pose({
+                position: msg.poses[i].pose.position,
+                orientation: msg.poses[i].pose.orientation
+            });
+            if (localPathTransform) {
+                iPose.applyTransform(localPathTransform);
+            }
+            xl[i] = -(mapOrigin_x - iPose.position.x) * mapFactor;
+            yl[i] = 1024 + (mapOrigin_y - iPose.position.y) * mapFactor;
+            var msg_rotation = new THREE.Euler().setFromQuaternion(iPose.orientation);
+            anglel[i] = -msg_rotation.z;
+        }
+    });
 
-    img = loadImage(mapUrl);
+    p.setup = function() {
+        //p.pixelDensity(1);
 
-    //p.background('rgba(255, 0, 0, 0.2)');
-    //p.noLoop();
-    p.frameRate(30);
+        var c = p.createCanvas(CanvasConfig.mapWidth, CanvasConfig.mapHeight);
+        c.id("arCanvas");
+        //c.position(CanvasConfig.position.x, CanvasConfig.position.y/2);
 
-    x[x.length-1] = xin; // Set base x-coordinate
-    y[x.length-1] = yin;  // Set base y-coordinate
+        img = loadImage(mapUrl);
 
-    c.hide();
-  };
+        // p.background('rgba(255, 0, 0, 0.2)');
+        // p.noLoop();
+        p.frameRate(30);
 
-  p.draw = function() {
-    p.clear();
-    p.image(img, 0, 0);
+        x[x.length - 1] = xin; // Set base x-coordinate
+        y[x.length - 1] = yin; // Set base y-coordinate
 
-    if (xin > 0 && yin > 0 && wp_xin > 0 && wp_yin > 0) {
-      var d_wpFar = Math.sqrt((xin - wp_xin) * (xin - wp_xin) + (yin - wp_yin) * (yin - wp_yin));
-      segLength = d_wpFar/(numSegments + 1.0);
+        c.hide();
+    };
 
-      p.stroke(0, 255, 0, 255);
-      p.fill(0, 255, 0, 255);
-      crossHead(wp_xin, wp_yin, angle[0]);
+    p.draw = function() {
+        p.clear();
+        p.image(img, 0, 0);
 
-      //p.stroke(255, 255, 255, 255);
-      reachSegment(0, wp_xin, wp_yin);
+        if (xin > 0 && yin > 0) {
+            var d_wpFar;
+            // Draw global path
+            if (globalPathLength > 0) {
+                numSegments = globalPathLength;
+                d_wpFar = Math.sqrt((xin - x[numSegments - 1]) *
+                    (xin - x[numSegments - 1]) + (yin - y[numSegments - 1]) *
+                    (yin - y[numSegments - 1]));
+                segLength = d_wpFar / (numSegments + 1.0);
 
-      for(var i=1; i<numSegments; i++) {
-        reachSegment(i, targetX, targetY);
-      }
-      for(var j=x.length-1; j>=1; j--) {
-        positionSegment(j, j-1);
-      }
-      segmentHead(x[0], y[0], angle[0], 2);
-      for(var k=0; k<x.length; k++) {
-        segment(x[k], y[k], angle[k], (k+1) + 1);
-      }
+                p.stroke(0, 255, 0, 255);
+                p.fill(0, 255, 0, 255);
+                crossHead(x[numSegments - 1], y[numSegments - 1], angle[numSegments - 1]);
+                for (var k = 0; k < numSegments; k++) {
+                    segment(x[k], y[k], angle[k], 0.3);
+                }
+            }
+            // Draw local path
+            if (localPathLength > 0) {
+                numSegments = localPathLength;
+                d_wpFar = Math.sqrt((xin - xl[numSegments - 1]) *
+                    (xin - xl[numSegments - 1]) + (yin - yl[numSegments - 1]) *
+                    (yin - yl[numSegments - 1]));
+                segLength = d_wpFar / (numSegments + 1.0);
+
+                p.stroke(255, 0, 0, 255);
+                p.fill(255, 0, 0, 255);
+                for (var k = 0; k < numSegments; k++) {
+                    segment(xl[k], yl[k], anglel[k], 0.6);
+                }
+            }
+        }
+
+        // Draw everything to map texture for three.js kinect point cloud scene
+        mc = document.getElementById("arCanvas");
+        mapBufferContext.clearRect(0, 0, CanvasConfig.mapWidth, CanvasConfig.mapHeight);
+        mapBufferContext.drawImage(mc, 0, 0);
+    };
+
+    function crossHead(x, y, a) {
+        var chl = 6;
+        p.strokeWeight(2);
+        p.push();
+        p.translate(x, y);
+        p.rotate(a + Math.PI / 4);
+        p.line(0, -chl, 0, chl);
+        p.line(-chl, 0, chl, 0);
+        p.pop();
     }
 
-    // Draw everything to map texture for three.js kinect point cloud scene
-    mc = document.getElementById("arCanvas");
-    mapBufferContext.clearRect(0, 0, CanvasConfig.mapWidth, CanvasConfig.mapHeight);
-    mapBufferContext.drawImage(mc, 0, 0);
-  };
+    function positionSegment(a, b) {
+        x[b] = x[a] + cos(angle[a]) * segLength;
+        y[b] = y[a] + sin(angle[a]) * segLength;
+    }
 
-  function crossHead(x, y, a) {
-    var chl = 12;
-    p.strokeWeight(3);
-    p.push();
-    p.translate(x, y);
-    p.rotate(a + Math.PI/4);
-    p.line(0, -chl, 0, chl);
-    p.line(-chl, 0, chl, 0);
-    p.pop();
-  }
+    function reachSegment(i, xin, yin) {
+        var dx = xin - x[i];
+        var dy = yin - y[i];
+        angle[i] = atan2(dy, dx);
+        targetX = xin - cos(angle[i]) * segLength;
+        targetY = yin - sin(angle[i]) * segLength;
+    }
 
-  function positionSegment(a, b) {
-    x[b] = x[a] + cos(angle[a]) * segLength;
-    y[b] = y[a] + sin(angle[a]) * segLength;
-  }
+    function segmentHead(x, y, a, sw) {
+        p.strokeWeight(0.5);
+        p.push();
+        p.translate(x, y);
+        p.rotate(a);
+        p.triangle(segLength * 1.5, 0, segLength * 0.2, -segLength / 2, segLength * 0.2, segLength / 2);
+        p.pop();
+    }
 
-  function reachSegment(i, xin, yin) {
-    var dx = xin - x[i];
-    var dy = yin - y[i];
-    angle[i] = atan2(dy, dx);
-    targetX = xin - cos(angle[i]) * segLength;
-    targetY = yin - sin(angle[i]) * segLength;
-  }
-
-  function segmentHead(x, y, a, sw) {
-    p.strokeWeight(0.5);
-    p.push();
-    p.translate(x, y);
-    p.rotate(a);
-    p.triangle(segLength*1.5, 0, segLength * 0.2, -segLength/2, segLength * 0.2, segLength/2);
-    p.pop();
-  }
-
-  function segment(x, y, a, sw) {
-    p.strokeWeight(0.5);
-    p.push();
-    p.translate(x, y);
-    p.rotate(a);
-    p.quad(0, - sw, 0, sw, segLength, sw - 1, segLength, - sw + 1)
-    //p.line(0, 0, segLength, 0);
-    p.pop();
-  }
+    function segment(x, y, a, sw) {
+        p.strokeWeight(0.5);
+        p.push();
+        p.translate(x, y);
+        p.rotate(a);
+        p.quad(0, -sw, 0, sw, segLength, sw * 0.1, segLength, -sw * 0.1)
+        //p.line(0, 0, segLength, 0);
+        p.pop();
+    }
 };

@@ -20,8 +20,10 @@ zebra.package("ui.ros", function(pkg, Class) {
             modePanel.setPadding(4);
 
             var buttonLabel2 = new Label("Enter edge detection mode");
-            var pointCloudButton2 = new Button(buttonLabel2).properties({ canHaveFocus: false });
-            pointCloudButton2.bind(function (src) {
+            var pointCloudButton2 = new Button(buttonLabel2).properties({
+                canHaveFocus: false
+            });
+            pointCloudButton2.bind(function(src) {
                 if (Kinect.ColorMode.a > 0.3) {
                     Kinect.ColorMode.a = 0.0;
                     buttonLabel2.setValue("Enter edge detection mode");
@@ -34,8 +36,10 @@ zebra.package("ui.ros", function(pkg, Class) {
             });
 
             var buttonLabel = new Label("Enter collision detection mode");
-            var pointCloudButton = new Button(buttonLabel).properties({ canHaveFocus: false });
-            pointCloudButton.bind(function (src) {
+            var pointCloudButton = new Button(buttonLabel).properties({
+                canHaveFocus: false
+            });
+            pointCloudButton.bind(function(src) {
                 if (Kinect.ColorMode.a > 0.1 && Kinect.ColorMode.a < 0.3) {
                     Kinect.ColorMode.a = 0.0;
                     buttonLabel.setValue("Enter collision detection mode");
@@ -79,10 +83,12 @@ zebra.package("ui.ros", function(pkg, Class) {
                 padding: 8
             });
 
-            var saveButton = new Button("Save").properties({ canHaveFocus: false });
-            saveButton.bind(function (src) {
+            var saveButton = new Button("Save").properties({
+                canHaveFocus: false
+            });
+            saveButton.bind(function(src) {
                 savedLabel.setValue(savedLabel.getValue() + "\n======  " + new Date().toLocaleString() +
-                                    "  ======\n" + inputLabel.getValue());
+                    "  ======\n" + inputLabel.getValue());
                 inputLabel.setValue("");
             });
 
@@ -102,14 +108,14 @@ zebra.package("ui.ros", function(pkg, Class) {
             topicPanel.setId("topic_view");
             topicPanel.setPreferredSize(320, 666);
 
-            var topicLabel = new TextField("/cari/waypoints").properties({
+            var topicLabel = new TextField("/cari/pose").properties({
                 font: "26px Futura, Helvetica, sans-serif",
                 color: "black",
                 padding: 8,
                 background: "white"
             });
 
-            var typeLabel = new TextField("geometry_msgs/Point").properties({
+            var typeLabel = new TextField("geometry_msgs/Pose").properties({
                 font: "26px Futura, Helvetica, sans-serif",
                 color: "black",
                 padding: 8,
@@ -124,13 +130,15 @@ zebra.package("ui.ros", function(pkg, Class) {
 
             var odomSubscriber = null;
             var buttonLabel = new Label("Subscribe");
-            var subscribeButton = new Button(buttonLabel).properties({ canHaveFocus: false });
-            subscribeButton.bind(function (src) {
+            var subscribeButton = new Button(buttonLabel).properties({
+                canHaveFocus: false
+            });
+            subscribeButton.bind(function(src) {
                 if (buttonLabel.getValue() === "Subscribe") {
                     odomSubscriber = new ROSLIB.Topic({
-                        ros : ros,
-                        name : topicLabel.getValue(),
-                        messageType : typeLabel.getValue()
+                        ros: ros,
+                        name: topicLabel.getValue(),
+                        messageType: typeLabel.getValue()
                     });
 
                     if (odomSubscriber != null) {

@@ -68,7 +68,7 @@ target_link_libraries(${PROJECT_NAME}
 #   ${catkin_LIBRARIES}
 # )
 
-roslaunch_add_file_check(tools)
+roslaunch_add_file_check(scripts)
 
 #############
 ## Install ##
