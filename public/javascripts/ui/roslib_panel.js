@@ -108,7 +108,7 @@ zebra.package("ui.ros", function(pkg, Class) {
             topicPanel.setId("topic_view");
             topicPanel.setPreferredSize(320, 666);
 
-            var topicLabel = new TextField("/cari/pose").properties({
+            var topicLabel = new TextField("robot_pose").properties({
                 font: "26px Futura, Helvetica, sans-serif",
                 color: "black",
                 padding: 8,
