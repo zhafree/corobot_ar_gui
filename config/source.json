@@ -16,7 +16,7 @@
     },
     "MapFile": {
         "map_url": "/images/oriental_a502_demo.png",
-        "blue_map_url": "/images/oriental_a502_demo_blue.png",
+        "blue_map_url": "/images/oriental_blank.png",
         "width": 1024,
         "height": 1024,
         "origin_x": -12.51,
