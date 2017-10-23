@@ -22,7 +22,7 @@ if [ "$nodeVersion" = 'v5.5.0' ]; then
   popd > /dev/null
 
   pushd "$SCRIPTPATH/.." > /dev/null
-  DEBUG=corobot_ar_gui:* PORT=8181 CHILD_PORT=3000 npm start
+  DEBUG=corobot_ar_gui:* PORT=8989 CHILD_PORT=3000 npm start
   popd > /dev/null
 
   exit 0

@@ -3,7 +3,7 @@
     "Ports": {
         "rosbridge_server_port": 9090,
         "web_video_server_port": 8080,
-        "ar_gui_port": 8181,
+        "ar_gui_port": 8989,
         "ar_proxy_port": 3000
     },
     "KinectStatic": {

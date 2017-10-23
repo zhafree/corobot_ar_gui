@@ -41,7 +41,7 @@ var createARCanvas = function(p) {
 
     var globalPathSubscriber = new ROSLIB.Topic({
         ros: ros,
-        name: "/move_base/NavfnROS/plan",
+        name: "/move_base/OCSCGlobalPlanner/plan",
         messageType: "nav_msgs/Path",
         queue_size: 1
     }).subscribe(function(msg) {

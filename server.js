@@ -92,7 +92,7 @@ var kinectSSE = function(req, res) {
 // Set up proxy rules instance
 var proxyRules = new HttpProxyRules({
     rules: {},
-    default: 'http://localhost:8181' // default target
+    default: 'http://localhost:8989' // default target
 });
 
 // Create reverse proxy instance
